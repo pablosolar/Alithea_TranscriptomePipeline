@@ -1,0 +1,7 @@
+{
+    "sample_input": [
+        ["Stub_Sample1", "/path/to/stub/demultiplexed_fastqs/Stub_Sample1_R2.fastq.gz"]
+    ],
+    "transcriptome_index": "/path/to/stub/index/stub_kallisto.idx",
+    "results_dir": "stub"
+}

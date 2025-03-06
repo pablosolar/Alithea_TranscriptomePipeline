@@ -1,0 +1,7 @@
+{
+    "sample_input": [
+        ["Treated1", "/path/to/demultiplexed/Treated1_R2.fastq.gz"]
+    ],
+    "transcriptome_index": "/path/to/index/Homo_sapiens.GRCh38.cdna.all.idx",
+    "results_dir": "/path/to/results"
+}

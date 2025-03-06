@@ -1,0 +1,9 @@
+{
+    "se_abundance_tsvs": [
+        "/path/to/stub/transcriptome_quantification/single_end/Stub_Sample1_se_abundance.tsv"
+    ],
+    "pe_abundance_tsvs": [
+        "/path/to/stub/transcriptome_quantification/paired_end/Stub_Sample1_pe_abundance.tsv"
+    ],
+    "results_dir": "stub"
+}

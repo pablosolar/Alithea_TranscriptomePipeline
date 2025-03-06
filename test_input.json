@@ -1,0 +1,9 @@
+{
+    "create_index": false,
+    "transcriptome_fasta_path": "/Users/pablosolar/Downloads/Homo_sapiens.GRCh38.cdna.all.fa.gz",
+    "index_output_dir": "index",
+    "index_basename": "Homo_sapiens.GRCh38.cdna.all.idx",
+    "demultiplexed_fastqs": "/Users/pablosolar/Downloads/demultiplexed/*.fastq.gz",
+    "single_end": true,
+    "paired_end": false
+}

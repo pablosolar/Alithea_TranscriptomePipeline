@@ -1,0 +1,6 @@
+{
+    "transcriptome_fasta_path": "/path/to/stub/references/reference.fa.gz",
+    "index_output_dir": "stub/index/",
+    "index_basename": "/path/to/stub_kallisto.idx",
+    "create_index": true
+}

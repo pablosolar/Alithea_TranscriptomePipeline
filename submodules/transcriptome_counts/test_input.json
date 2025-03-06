@@ -1,0 +1,12 @@
+{
+    "se_abundance_tsvs": [
+        "/path/to/results/transcriptome_quantification/single_end/Treated1_se_abundance.tsv",
+        "/path/to/results/transcriptome_quantification/single_end/Treated2_se_abundance.tsv"
+
+    ],
+    "pe_abundance_tsvs": [
+        "/path/to/results/transcriptome_quantification/paired_end/Treated1_pe_abundance.tsv",
+        "/path/to/results/transcriptome_quantification/paired_end/Treated2_pe_abundance.tsv"
+    ],
+    "results_dir": "results"
+}
