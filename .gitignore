@@ -1,1 +1,17 @@
+# Ignore index file for repo
 index/
+
+# Ignore Nextflow work directory
+work/
+.nextflow/
+.nextflow.log*
+.nextflow.history
+
+# Ignore logs inside submodules
+submodules/*/.nextflow*
+submodules/*/work/
+
+# Ignore output files (if generated in main directory)
+#*.idx
+#*.tsv
+#*.log
