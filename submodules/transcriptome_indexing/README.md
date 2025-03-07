@@ -1,18 +1,30 @@
-# **Transcriptome indexing module**
+# **Transcriptome Indexing Module**
 
 ## **Overview**
 
-I used the `kallisto index -i` command to generate a **precomputed transcriptome index**, which is essential for performing fast pseudo-alignment of RNA-Seq reads. This step is crucial for **transcript quantification** and **differential expression analysis**.
+I developed this module to **generate a transcriptome index for Kallisto** using a **reference transcriptome FASTA file**. This step is required to enable **fast pseudo-alignment** of RNA-Seq reads in later stages of the pipeline.
 
-## **Why this is needed**
+## **What This Module Does?**
+1. Uses `kallisto index -i` to generate a **precomputed transcriptome index**.
+2. Saves the generated index in the specified directory (`index_output_dir`).
+3. Ensures consistency by allowing the user to **choose between generating a new index or using an existing one** (`create_index`).
 
-The **transcriptome index** is necessary for efficient RNA-Seq quantification. Without this index, Kallisto cannot perform fast and accurate pseudo-alignment of RNA-Seq reads. This index is required for the next steps of the workflow, including **quantification** and **differential expression analysis**.
+---
 
-## **Kallisto is fully dockerized**
+## **Why is This Needed?**
+Kallisto requires a **precomputed index** to efficiently perform pseudo-alignment and transcript quantification. Without this index, RNA-Seq reads cannot be aligned quickly, making transcript abundance estimation **impractically slow**.
 
-This module **does not require manual installation of Kallisto**. 
+- **Using an index greatly reduces computational time** for RNA-Seq analysis.
+- **Ensures reproducibility** by working with a pre-defined reference transcriptome.
+- **Supports flexible execution**: If a pre-existing index is available, the module can skip the index generation step.
 
-Instead, **I created a public Docker container** that includes **Kallisto v0.51.1** to ensure **consistency across different environments** and prevent dependency issues.
+---
+
+## **Kallisto Indexing is Fully Dockerized**
+
+This module **does not require manual installation of Kallisto**.
+
+Instead, **I created a public Docker container** (`pablosolar/kallisto_tool:v0.51.1`) to ensure **consistency across different environments** and prevent dependency issues.
 
 This is specified in `nextflow.config`:
 
@@ -30,7 +42,9 @@ When running the module, simply add `-with-docker` to ensure execution inside th
 nextflow run main.nf -params-file test_input.json -with-docker
 ```
 
-## **Input parameters**
+---
+
+## **Input Parameters**
 
 This module requires the following input parameters:
 
@@ -41,19 +55,19 @@ This module requires the following input parameters:
 | `index_basename`           | string  | Name of the output Kallisto index file                                      |
 | `create_index`             | boolean | Whether to generate the index (`true`) or use an existing one (`false`)    |
 
-## **How to run this module**
+---
 
-### **Running normally (generate index)**
+## **How to Run This Module**
 
-To generate a **real** Kallisto index, execute:
+### **Running Normally (Generate Index)**
+To generate a **real** Kallisto index, I run:
 
 ```
 nextflow run main.nf -params-file test_input.json -with-docker
 ```
 
-### **Example test input file**
-
-This is an example of the `test_input.json` file for running the module:
+#### **Example of `test_input.json`**
+Here is the test input JSON file I use for running the module normally:
 
 ```
 {
@@ -64,30 +78,41 @@ This is an example of the `test_input.json` file for running the module:
 }
 ```
 
-### **Running in stub mode (simulated execution)**
-
-To test the module **without actually generating an index**, stub mode can be used:
+### **Running in Stub Mode (Simulated Execution)**
+To test without generating an actual index, I use stub mode:
 
 ```
-nextflow run main.nf -stub-run -params-file stub/stub_test_input.json -with-docker
+nextflow run main.nf -stub-run -params-file stub/stub_test_input.json
 ```
 
-### **Example stub test input file**
+#### **Example of `stub_test_input.json`**
+This is the stub test input JSON file for validating module execution:
 
 ```
 {
     "transcriptome_fasta_path": "/path/to/stub/references/reference.fa.gz",
     "index_output_dir": "stub/index/",
-    "index_basename": "/path/to/stub_kallisto.idx",
+    "index_basename": "stub_kallisto.idx",
     "create_index": true
 }
 ```
 
-## **Expected outputs**
+---
 
-| Mode       | Output path                                      |
-|------------|------------------------------------------------|
-| Normal     | `/path/to/index/Homo_sapiens.GRCh38.cdna.all.idx` |
-| Stub mode  | `stub/index/stub_kallisto.idx`                 |
+## **Expected Outputs**
+
+| Mode       | Output File Path                                       |
+|------------|--------------------------------------------------------|
+| Normal     | `/path/to/index/Homo_sapiens.GRCh38.cdna.all.idx`      |
+| Stub Mode  | `stub/index/stub_kallisto.idx`                        |
 
 After execution, the **generated transcriptome index** is stored in the directory specified by `index_output_dir`, using the filename defined in `index_basename`.
+
+---
+
+## **References**
+I based my approach on these references:
+- [Kallisto GitHub](https://github.com/pachterlab/kallisto)  
+- [Kallisto official documentation](https://pachterlab.github.io/kallisto/)
+- Bray, N.L., Pimentel, H., Melsted, P., & Pachter, L. (2016). *Near-optimal probabilistic RNA-seq quantification.* *Nature Biotechnology*, 34(5), 525-527.
+---

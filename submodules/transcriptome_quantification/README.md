@@ -2,28 +2,32 @@
 
 ## **Overview**
 
-I decided to use the `kallisto quant` command to perform transcript quantification from RNA-Seq reads using a **precomputed transcriptome index**. This step is crucial for **isoform quantification** and **differential expression analysis**, as specified in the Alithea Genomics testing assignment.
+I developed this module to **perform transcript quantification using Kallisto** on RNA-Seq reads. This step is essential for **isoform quantification and differential expression analysis (DEA)**, ensuring that transcript abundance is accurately estimated for downstream analysis.
 
-This module supports quantification in the following modes:
+This module supports two quantification modes:
 - **Single-End (SE) Mode**: Uses only Read 2 (`_R2.fastq.gz`).
 - **Paired-End (PE) Mode**: Uses both Read 1 (`_R1.fastq.gz`) and Read 2 (`_R2.fastq.gz`).
 
-## **Why this is needed**
+To avoid filename collisions in Nextflow, I created separate workflows for SE and PE quantification, ensuring that outputs are properly distinguished and managed.
 
-Accurate transcript quantification is essential for understanding gene expression patterns. This module processes RNA-Seq data using **pseudo-alignment**, which enables **fast and efficient quantification** while avoiding computationally expensive full alignments.
+---
 
-- **Single-End Mode (SE)** assumes that only Read 2 is available, which can occur due to sequencing constraints, cost reductions, or specific experimental setups. **SE quantification is faster but may have slightly lower accuracy** compared to PE.
-- **Paired-End Mode (PE)** uses both Read 1 and Read 2. PE reads provide **more complete fragment information**, improving **quantification accuracy** by considering both ends of the cDNA fragment.
+## **Why Use Kallisto for Quantification?**
+I chose **Kallisto** because it offers **fast and accurate transcript quantification** through **pseudo-alignment**.
 
-## **Kallisto is fully dockerized**
+- **Single-End Mode (SE)** is useful when only Read 2 is available, reducing costs but with slightly lower accuracy.
+- **Paired-End Mode (PE)** provides **better fragment information**, improving quantification precision.
 
+---
+
+## **Kallisto is Fully Dockerized**
 This module **does not require manual installation of Kallisto**.
 
-Instead, **I created a public Docker container** that includes **Kallisto v0.51.1**, ensuring **consistency across different environments** and avoiding dependency issues.
+Instead, **I created a public Docker container** (`pablosolar/kallisto_tool:v0.51.1`) to ensure **consistency across different environments**.
 
 This is specified in `nextflow.config`:
 
-```
+```bash
 process {
     withName: transcriptome_quantification_se_app {
         container = "pablosolar/kallisto_tool:v0.51.1"
@@ -36,35 +40,33 @@ process {
 
 When running the module, simply add `-with-docker` to ensure execution inside the container:
 
-```
+```bash
 nextflow run main.nf -params-file test_input.json -with-docker
 ```
 
-## **Input parameters**
+---
 
-This module requires the following input parameters:
+## **Input Parameters**
 
-| Parameter                | Type    | Description                                                                   |
-|--------------------------|---------|-------------------------------------------------------------------------------|
-| `sample_input`           | array   | List of tuples: [`sample_id, fastq_files`] (single file for SE, two files for PE) |
-| `transcriptome_index`    | string  | Path to the precomputed Kallisto transcriptome index file                     |
-| `results_dir`            | string  | Directory where quantification results will be stored                         |
+| Parameter                | Type   | Description                                                   |
+|--------------------------|--------|---------------------------------------------------------------|
+| `sample_input`           | array  | List of tuples: [`sample_id, fastq_files`] (single file for SE, two files for PE) |
+| `transcriptome_index`    | string | Path to the precomputed Kallisto transcriptome index file     |
+| `results_dir`            | string | Directory where quantification results will be stored         |
 
-## **How to run this module**
+---
 
-### **Running normally (perform quantification)**
+## **How to Run This Module**
 
+### **Running Normally (Perform Quantification)**
 To run **real** Kallisto quantification, execute:
 
-```
+```bash
 nextflow run main.nf -params-file test_input.json -with-docker
 ```
 
-### **Example test input file**
-
-This is an example of the `test_input.json` file for running the module:
-
-```
+#### **Example of `test_input.json`**
+```json
 {
     "sample_input": [
         ["Treated1", "/path/to/demultiplexed/Treated1_R2.fastq.gz"]
@@ -74,17 +76,17 @@ This is an example of the `test_input.json` file for running the module:
 }
 ```
 
-### **Running in stub mode (simulated execution)**
+---
 
-To test the module **without actually running Kallisto**, stub mode can be used:
+### **Running in Stub Mode (Simulated Execution)**
+To test without performing real quantification, use stub mode:
 
-```
+```bash
 nextflow run main.nf -stub-run -params-file stub/stub_test_input.json -with-docker
 ```
 
-### **Example stub test input file**
-
-```
+#### **Example of `stub_test_input.json`**
+```json
 {
     "sample_input": [
         ["Stub_Sample1", "/path/to/stub/demultiplexed_fastqs/Stub_Sample1_R2.fastq.gz"]
@@ -94,7 +96,9 @@ nextflow run main.nf -stub-run -params-file stub/stub_test_input.json -with-dock
 }
 ```
 
-## **Expected outputs**
+---
+
+## **Expected Outputs**
 
 | Mode          | Final Published Path                                                      |
 |--------------|-------------------------------------------------------------------------|
@@ -107,4 +111,11 @@ nextflow run main.nf -stub-run -params-file stub/stub_test_input.json -with-dock
 
 After execution, the **quantification results** are stored in the directory specified by `results_dir`.
 
+---
+
+## **References**
+I based my approach on these references:
+- [Kallisto GitHub](https://github.com/pachterlab/kallisto)  
+- [Kallisto official documentation](https://pachterlab.github.io/kallisto/)
+- Bray, N.L., Pimentel, H., Melsted, P., & Pachter, L. (2016). *Near-optimal probabilistic RNA-seq quantification.* *Nature Biotechnology*, 34(5), 525-527.
 ---

@@ -91,8 +91,6 @@ Here is the test input JSON file I use for running the module normally:
 }
 ```
 
----
-
 ### **Running in Stub Mode (Simulated Execution)**
 To test without performing real DEA, I use stub mode:
 
@@ -137,6 +135,8 @@ This is the stub test input JSON file for validating module execution:
 - **Heatmap (`heatmap_plot.png`)**: Displays pairwise distances between samples.
 - **Transcript Heatmap (`transcript_heatmap_plot.png`)**: Highlights expression patterns of top DE transcripts.
 - **Bootstrap Plot (`bootstrap_plot.png`)**: Visualizes confidence intervals for expression estimates.
+
+After execution, the **quantification results** are stored in the directory specified by `results_dir`.
 
 ---
 

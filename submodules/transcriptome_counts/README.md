@@ -9,6 +9,8 @@ I developed this module to **extract transcript counts from Kallisto quantificat
 2. Creates a **transcript count matrix** (`se_vs_pe_transcript_counts.tsv`).
 3. Generates a **boxplot** (`se_vs_pe_boxplot.png`) comparing SE vs. PE transcript detection.
 
+This workflow **automatically handles SE, PE, or both input types** based on the provided parameters. It ensures that outputs are correctly labeled and processed without requiring separate workflows.
+
 ---
 
 ## **Why Use TPM Instead of Estimated Counts?**
@@ -25,7 +27,7 @@ Instead, **I created a public Docker container** (`pablosolar/kallisto_counts_bo
 
 This is specified in `nextflow.config`:
 
-```
+```bash
 process {
     withName: transcriptome_counts_app {
         container = "pablosolar/kallisto_counts_boxplot:v1.0.0"
@@ -35,7 +37,7 @@ process {
 
 When running the module, simply add `-with-docker` to ensure execution inside the container:
 
-```
+```bash
 nextflow run main.nf -params-file test_input.json -with-docker
 ```
 
@@ -58,19 +60,18 @@ This module requires the following input parameters:
 ### **Running Normally (Extract Counts and Generate Boxplot)**
 To extract transcript counts and generate the boxplot, I run:
 
-```
+```bash
 nextflow run main.nf -params-file test_input.json -with-docker
 ```
 
 #### **Example of `test_input.json`**
 Here is the test input JSON file I use for running the module normally:
 
-```
+```json
 {
     "se_abundance_tsvs": [
         "/path/to/results/transcriptome_quantification/single_end/Treated1_se_abundance.tsv",
         "/path/to/results/transcriptome_quantification/single_end/Treated2_se_abundance.tsv"
-
     ],
     "pe_abundance_tsvs": [
         "/path/to/results/transcriptome_quantification/paired_end/Treated1_pe_abundance.tsv",
@@ -85,14 +86,14 @@ Here is the test input JSON file I use for running the module normally:
 ### **Running in Stub Mode (Simulated Execution)**
 To test without extracting real counts, I use stub mode:
 
-```
-nextflow run main.nf -stub-run -params-file stub/stub_test_input.json -with-docker
+```bash
+nextflow run main.nf -stub-run -params-file stub/stub_test_input.json
 ```
 
 #### **Example of `stub_test_input.json`**
 This is the stub test input JSON file for validating module execution:
 
-```
+```json
 {
     "se_abundance_tsvs": [
         "/path/to/stub/transcriptome_quantification/single_end/Stub_Sample1_se_abundance.tsv"
@@ -135,4 +136,13 @@ This is the stub test input JSON file for validating module execution:
 #### **Generated Boxplot**
 ![](stub/transcriptome_counts/se_vs_pe_boxplot.png)
 
-This module helps visualize the impact of sequencing strategy (SE vs. PE) on transcript detection, preparing the data for downstream **differential expression analysis (DEA)**.
+After execution, the **quantification results** are stored in the directory specified by `results_dir`.
+
+---
+
+## **References**
+I based my approach on these references:
+- [Kallisto GitHub](https://github.com/pachterlab/kallisto)  
+- [Kallisto official documentation](https://pachterlab.github.io/kallisto/)
+- Bray, N.L., Pimentel, H., Melsted, P., & Pachter, L. (2016). *Near-optimal probabilistic RNA-seq quantification.* *Nature Biotechnology*, 34(5), 525-527.
+---
