@@ -1,4 +1,3 @@
-
 # **Differential Expression Analysis (DEA) Module**
 
 ## **Overview**
@@ -14,8 +13,8 @@ I developed this module to **perform transcript-level differential expression an
 4. **Visualizes results** via multiple plots:
    - **PCA plot** (`pca_plot.png`) for sample clustering.
    - **Sample distance heatmap** (`heatmap_plot.png`).
-   - **Transcript expression heatmap** (`transcript_heatmap_plot.png`).
-   - **Bootstrap confidence plot** (`bootstrap_plot.png`) for the most significant transcript.
+   - **Transcript expression heatmap** (`transcript_heatmap_plot.png`), including up to the first 40 most significant transcripts.
+   - **Bootstrap confidence plot** (`bootstrap_plot.png`) for the most significant transcript **with valid bootstrap estimates**.
 
 ---
 
@@ -117,8 +116,8 @@ This is the stub test input JSON file for validating module execution:
 
 ## **Expected Outputs**
 
-| Mode       | Output File Path                                         |
-|------------|----------------------------------------------------------|
+| Mode       | Output File Path                                        |
+|------------|---------------------------------------------------------|
 | Normal     | `/path/to/results/transcriptome_dea/sleuth_metadata.tsv` |
 | Normal     | `/path/to/results/transcriptome_dea/sleuth_lrt_results.tsv` |
 | Normal     | `/path/to/results/transcriptome_dea/sleuth_wald_results.tsv` |
@@ -133,40 +132,44 @@ This is the stub test input JSON file for validating module execution:
 #### **Generated Plots**
 - **PCA Plot (`pca_plot.png`)**: Shows clustering of samples by condition.
 - **Heatmap (`heatmap_plot.png`)**: Displays pairwise distances between samples.
-- **Transcript Heatmap (`transcript_heatmap_plot.png`)**: Highlights expression patterns of top DE transcripts.
-- **Bootstrap Plot (`bootstrap_plot.png`)**: Visualizes confidence intervals for expression estimates.
+- **Transcript Heatmap (`transcript_heatmap_plot.png`)**: Highlights expression patterns of **up to first 40** differentially expressed transcripts.
+- **Bootstrap Plot (`bootstrap_plot.png`)**: Generated for the **most significant transcript**.
 
 After execution, the **quantification results** are stored in the directory specified by `results_dir`.
 
 ---
 
 ## **Decisions I Took in the R Script**
+
 ### **1. Metadata Handling**
 - I automatically generate `sleuth_metadata.tsv` to **map samples to conditions** (treated/untreated).
-- This ensures correct grouping when fitting statistical models.
+- This ensures samples are correctly grouped for statistical modeling.
+- The metadata file is **validated** to ensure it contains the required `sample`, `condition`, and `path` columns before proceeding.
 
 ### **2. Model Selection**
 I defined:
 - **Full model**: `~condition` (includes condition-based expression differences).
 - **Reduced model**: `~1` (null model with no condition effect).
-- This setup allows **LRT to detect global transcript expression changes**.
+- This setup allows **LRT to detect global transcript expression changes** by comparing the **full** and **reduced** models.
 
 ### **3. Likelihood Ratio Test (LRT)**
-- Compares the full and reduced models to find transcripts with **significant expression differences**.
+- Compares the **full** and **reduced** models to identify transcripts with **significant expression differences**.
+- Results are saved in `sleuth_lrt_results.tsv`.
 
 ### **4. Wald Test**
-- Used for **pairwise comparisons** (treated vs untreated), ranking transcripts by **effect size and significance**.
+- Applied for **pairwise comparisons** (e.g., treated vs. untreated conditions).
+- Results are **sorted** by q-value (FDR-adjusted p-value) and effect size before saving to `sleuth_wald_results.tsv`.
 
 ### **5. Selection of the Most Significant Transcript for Bootstrap Plot**
 - I **checked if bootstrap estimates were available** (`so$bs_quants`).
-- The **most significant transcript (lowest q-value)** was selected for visualization.
-- This ensures **bootstrapped confidence intervals are only plotted for valid transcripts**.
+- The **most significant transcript** (lowest q-value) with valid bootstrap estimates is selected for visualization.
+- The plot is saved as `bootstrap_plot.png`.
 
 ### **6. Quality Control and Visualization**
-- **PCA Plot:** Detects batch effects and sample clustering.
-- **Sample Heatmap:** Shows transcript-based sample similarities.
-- **Transcript Heatmap:** Displays top 40 significant transcripts.
-- **Bootstrap Plot:** Visualizes uncertainty in transcript quantifications.
+- **PCA Plot (`pca_plot.png`)**: Detects batch effects and sample clustering.
+- **Sample Heatmap (`heatmap_plot.png`)**: Displays transcript-based sample similarities.
+- **Transcript Heatmap (`transcript_heatmap_plot.png`)**: Visualizes expression patterns of **the top 40 differentially expressed transcripts**.
+- **Bootstrap Plot (`bootstrap_plot.png`)**:  Visualizes bootstrap variation for the most significant transcript with valid bootstrap estimates.
 
 ---
 
@@ -174,9 +177,7 @@ I defined:
 I based my approach on these references:
 - [Pachter Lab - Sleuth Walkthrough](https://pachterlab.github.io/sleuth_walkthroughs/trapnell/analysis.html)
 - [Harvard Biostatistics Training - Sleuth](https://hbctraining.github.io/DGE_workshop_salmon/lessons/09_sleuth.html)
-- [RNAseq Differential Expression Workshop](https://www.bioinformatics.nl/courses/RNAseq/2a_Differential_Expression_lab.pdf)
 - [Sleuth Analysis RPubs](https://rpubs.com/kapeelc12/Sleuth)
 - Pimentel, H., Bray, N.L., Puente, S., Melsted, P., & Pachter, L. (2017). *Differential analysis of RNA-Seq incorporating quantification uncertainty.* *Nature Methods*, 14(7), 687-690.
 - Bray, N.L., Pimentel, H., Melsted, P., & Pachter, L. (2016). *Near-optimal probabilistic RNA-seq quantification.* *Nature Biotechnology*, 34(5), 525-527.
-
----
+"""

@@ -28,7 +28,7 @@ Instead, **I created a public Docker container** (`pablosolar/kallisto_tool:v0.5
 
 This is specified in `nextflow.config`:
 
-```
+```bash
 process {
     withName: transcriptome_indexing_app {
         container = "pablosolar/kallisto_tool:v0.51.1"
@@ -38,7 +38,7 @@ process {
 
 When running the module, simply add `-with-docker` to ensure execution inside the container:
 
-```
+```bash
 nextflow run main.nf -params-file test_input.json -with-docker
 ```
 
@@ -62,14 +62,14 @@ This module requires the following input parameters:
 ### **Running Normally (Generate Index)**
 To generate a **real** Kallisto index, I run:
 
-```
+```bash
 nextflow run main.nf -params-file test_input.json -with-docker
 ```
 
 #### **Example of `test_input.json`**
 Here is the test input JSON file I use for running the module normally:
 
-```
+```json
 {
     "create_index": true,
     "transcriptome_fasta_path": "/path/to/reference/fasta/Homo_sapiens.GRCh38.cdna.all.fa.gz",
@@ -81,14 +81,14 @@ Here is the test input JSON file I use for running the module normally:
 ### **Running in Stub Mode (Simulated Execution)**
 To test without generating an actual index, I use stub mode:
 
-```
+```bash
 nextflow run main.nf -stub-run -params-file stub/stub_test_input.json
 ```
 
 #### **Example of `stub_test_input.json`**
 This is the stub test input JSON file for validating module execution:
 
-```
+```json
 {
     "transcriptome_fasta_path": "/path/to/stub/references/reference.fa.gz",
     "index_output_dir": "stub/index/",
