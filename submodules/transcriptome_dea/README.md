@@ -1,7 +1,6 @@
 # **Differential Expression Analysis (DEA) Module**
 
 ## **Overview**
-
 I developed this module to **perform transcript-level differential expression analysis (DEA) using Sleuth** on quantification results from **Kallisto pseudo-alignment**. This step identifies transcripts that exhibit **significant expression changes** between conditions (e.g., **treated vs. untreated**).
 
 ## **What This Module Does?**
@@ -11,10 +10,10 @@ I developed this module to **perform transcript-level differential expression an
    - **Likelihood Ratio Test (LRT)** to detect globally significant transcripts.
    - **Wald Test** for pairwise comparisons (treated vs untreated).
 4. **Visualizes results** via multiple plots:
-   - **PCA plot** (`pca_plot.png`) for sample clustering.
-   - **Sample distance heatmap** (`heatmap_plot.png`).
-   - **Transcript expression heatmap** (`transcript_heatmap_plot.png`), including up to the first 40 most significant transcripts.
-   - **Bootstrap confidence plot** (`bootstrap_plot.png`) for the most significant transcript **with valid bootstrap estimates**.
+   - **PCA plot** (`se_pca_plot.png`, `pe_pca_plot.png`) for sample clustering.
+   - **Sample distance heatmap** (`se_heatmap_plot.png`, `pe_heatmap_plot.png`).
+   - **Transcript expression heatmap** (`se_transcript_heatmap_plot.png`, `pe_transcript_heatmap_plot.png`).
+   - **Bootstrap confidence plot** (`se_bootstrap_plot.png`, `pe_bootstrap_plot.png`).
 
 ---
 
@@ -105,9 +104,6 @@ This is the stub test input JSON file for validating module execution:
     "se_abundance_h5s": [
         "/path/to/stub/transcriptome_quantification/single_end/Stub_Sample1_pe_abundance.h5"
     ],
-    "pe_abundance_h5s": [
-        "/path/to/stub/transcriptome_quantification/paired_end/Stub_Sample1_se_abundance.h5"
-    ],
     "results_dir": "stub"
 }
 ```
@@ -116,24 +112,35 @@ This is the stub test input JSON file for validating module execution:
 
 ## **Expected Outputs**
 
-| Mode       | Output File Path                                        |
-|------------|---------------------------------------------------------|
-| Normal     | `/path/to/results/transcriptome_dea/sleuth_metadata.tsv` |
-| Normal     | `/path/to/results/transcriptome_dea/sleuth_lrt_results.tsv` |
-| Normal     | `/path/to/results/transcriptome_dea/sleuth_wald_results.tsv` |
-| Normal     | `/path/to/results/transcriptome_dea/pca_plot.png` |
-| Normal     | `/path/to/results/transcriptome_dea/heatmap_plot.png` |
-| Normal     | `/path/to/results/transcriptome_dea/transcript_heatmap_plot.png` |
-| Normal     | `/path/to/results/transcriptome_dea/bootstrap_plot.png` |
-| Stub Mode  | `stub/transcriptome_dea/sleuth_metadata.tsv` |
-| Stub Mode  | `stub/transcriptome_dea/sleuth_lrt_results.tsv` |
-| Stub Mode  | `stub/transcriptome_dea/sleuth_wald_results.tsv` |
+| Mode      | Output File Path                                                      |
+|-----------|-----------------------------------------------------------------------|
+| **SE**    | `results/transcriptome_dea/single_end/se_sleuth_metadata.tsv`         |
+| **SE**    | `results/transcriptome_dea/single_end/se_sleuth_lrt_results.tsv`      |
+| **SE**    | `results/transcriptome_dea/single_end/se_sleuth_wald_results.tsv`     |
+| **SE**    | `results/transcriptome_dea/single_end/se_pca_plot.png`                |
+| **SE**    | `results/transcriptome_dea/single_end/se_heatmap_plot.png`            |
+| **SE**    | `results/transcriptome_dea/single_end/se_transcript_heatmap_plot.png` |
+| **SE**    | `results/transcriptome_dea/single_end/se_bootstrap_plot.png`          |
+| **PE**    | `results/transcriptome_dea/paired_end/pe_sleuth_metadata.tsv`         |
+| **PE**    | `results/transcriptome_dea/paired_end/pe_sleuth_lrt_results.tsv`      |
+| **PE**    | `results/transcriptome_dea/paired_end/pe_sleuth_wald_results.tsv`     |
+| **PE**    | `results/transcriptome_dea/paired_end/pe_pca_plot.png`                |
+| **PE**    | `results/transcriptome_dea/paired_end/pe_heatmap_plot.png`            |
+| **PE**    | `results/transcriptome_dea/paired_end/pe_transcript_heatmap_plot.png` |
+| **PE**    | `results/transcriptome_dea/paired_end/pe_bootstrap_plot.png`          |
+| Stub Mode | `stub/transcriptome_dea/single_end/se_sleuth_metadata.tsv`               |
+| Stub Mode | `stub/transcriptome_dea/single_end/se_sleuth_lrt_results.tsv`               |
+| Stub Mode | `stub/transcriptome_dea/single_end/se_sleuth_wald_results.tsv`               |
+| Stub Mode | `stub/transcriptome_dea/single_end/se_pca_plot.tsv`            |
+| Stub Mode | `stub/transcriptome_dea/single_end/se_heatmap_plot.tsv`            |
+| Stub Mode | `stub/transcriptome_dea/single_end/se_transcript_heatmap_plot.tsv`            |
+| Stub Mode | `stub/transcriptome_dea/single_end/se_bootstrap_plot.tsv`            |
 
 #### **Generated Plots**
-- **PCA Plot (`pca_plot.png`)**: Shows clustering of samples by condition.
-- **Heatmap (`heatmap_plot.png`)**: Displays pairwise distances between samples.
-- **Transcript Heatmap (`transcript_heatmap_plot.png`)**: Highlights expression patterns of **up to first 40** differentially expressed transcripts.
-- **Bootstrap Plot (`bootstrap_plot.png`)**: Generated for the **most significant transcript**.
+- **PCA Plot (`se|pe_pca_plot.png`)**: Shows clustering of samples by condition.
+- **Heatmap (`se|pe_heatmap_plot.png`)**: Displays pairwise distances between samples.
+- **Transcript Heatmap (`se|pe_transcript_heatmap_plot.png`)**: Highlights expression patterns of **up to first 40** differentially expressed transcripts.
+- **Bootstrap Plot (`se|pe_bootstrap_plot.png`)**: Generated for the **most significant transcript**.
 
 After execution, the **quantification results** are stored in the directory specified by `results_dir`.
 
@@ -154,7 +161,7 @@ I defined:
 
 ### **3. Likelihood Ratio Test (LRT)**
 - Compares the **full** and **reduced** models to identify transcripts with **significant expression differences**.
-- Results are saved in `sleuth_lrt_results.tsv`.
+- Results are saved in `se|pe_sleuth_lrt_results.tsv`.
 
 ### **4. Wald Test**
 - Applied for **pairwise comparisons** (e.g., treated vs. untreated conditions).
@@ -166,10 +173,10 @@ I defined:
 - The plot is saved as `bootstrap_plot.png`.
 
 ### **6. Quality Control and Visualization**
-- **PCA Plot (`pca_plot.png`)**: Detects batch effects and sample clustering.
-- **Sample Heatmap (`heatmap_plot.png`)**: Displays transcript-based sample similarities.
-- **Transcript Heatmap (`transcript_heatmap_plot.png`)**: Visualizes expression patterns of **the top 40 differentially expressed transcripts**.
-- **Bootstrap Plot (`bootstrap_plot.png`)**:  Visualizes bootstrap variation for the most significant transcript with valid bootstrap estimates.
+- **PCA Plot (`se|pe_pca_plot.png`)**: Detects batch effects and sample clustering.
+- **Sample Heatmap (`se|pe_heatmap_plot.png`)**: Displays transcript-based sample similarities.
+- **Transcript Heatmap (`se|pe_transcript_heatmap_plot.png`)**: Visualizes expression patterns of **the top 40 differentially expressed transcripts**.
+- **Bootstrap Plot (`se|pe_ootstrap_plot.png`)**:  Visualizes bootstrap variation for the most significant transcript with valid bootstrap estimates.
 
 ---
 

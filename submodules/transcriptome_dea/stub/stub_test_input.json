@@ -2,8 +2,5 @@
     "se_abundance_h5s": [
         "/path/to/stub/transcriptome_quantification/single_end/Stub_Sample1_pe_abundance.h5"
     ],
-    "pe_abundance_h5s": [
-        "/path/to/stub/transcriptome_quantification/paired_end/Stub_Sample1_se_abundance.h5"
-    ],
     "results_dir": "stub"
 }

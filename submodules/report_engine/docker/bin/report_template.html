@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcriptome Analysis Report</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+    }
+
+    h2 {
+        color: #2c3e50;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: auto;
+        border-collapse: collapse;
+        max-width: 100%;
+        table-layout: auto;
+        margin-top: 10px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        font-size: 12px;
+        text-align: left;
+        width: auto;
+        max-width: 100%;
+    }
+
+    .boxplot-container {
+        text-align: left;
+        margin-bottom: 20px;
+    }
+
+    .boxplot-container img {
+        max-width: 40%;
+        height: auto;
+        border: 1px solid #ddd;
+        margin-left: 10px;
+        padding: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .image-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 80px;
+        justify-content: flex-start;
+        margin-bottom: 30px;
+    }
+
+    .image-container div {
+        width: 40%;
+        text-align: center;
+    }
+
+    .image-container img {
+        width: 100%;
+        height: auto;
+        border: 1px solid #ddd;
+        padding: 5px;
+        background-color: #f9f9f9;
+        margin-left: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .image-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .image-container div {
+            width: 100%;
+        }
+    }
+</style>
+</head>
+<body>
+    <h1>Transcriptome Analysis Report</h1>
+
+    <h2>Index has been generated in the path:</h2>
+    <p>{{ index_info }}</p>
+
+    <h2>Transcriptome Counts (Top 20)</h2>
+
+    <!-- Message about what data is being shown -->
+    {% if se_metadata and pe_metadata %}
+        <p>Showing transcriptome results for <strong>both Single-End and Paired-End reads.</strong> Check the boxplot below for a comparison.</p>
+    {% elif se_metadata %}
+        <p>Showing transcriptome results for <strong>Single-End (SE) reads.</strong></p>
+    {% elif pe_metadata %}
+        <p>Showing transcriptome results for <strong>Paired-End (PE) reads.</strong></p>
+    {% else %}
+        <p style="color: red;"><strong>No transcriptome results available in this run.</strong></p>
+    {% endif %}
+
+    <div class="table-container">
+        {{ transcriptome_counts | safe }}
+    </div>
+
+    <!-- SE Analysis Section -->
+    <h2>Single-End (SE) Analysis</h2>
+    {% if se_metadata %}
+        <h3>SE Metadata</h3>
+        <div class="table-container">
+            {{ se_metadata | safe }}
+        </div>
+
+        <h3>SE DEA Results</h3>
+        <h4>Likelihood Ratio Test (LRT) - Top 20 Transcripts</h4>
+        <div class="table-container">
+            {{ se_lrt_results | safe }}
+        </div>
+
+        <h4>Wald Test - Top 20 Transcripts</h4>
+        <div class="table-container">
+            {{ se_wald_results | safe }}
+        </div>
+
+        <h3>SE Visualizations</h3>
+        <div class="image-container">
+            <div>
+                <h4>PCA Plot</h4>
+                <img src="{{ se_pca | safe }}" alt="SE PCA plot">
+            </div>
+            <div>
+                <h4>Sample Distance Heatmap</h4>
+                <img src="{{ se_heatmap | safe }}" alt="SE Sample Heatmap">
+            </div>
+        </div>
+        <div class="image-container">
+            <div>
+                <h4>Transcript Expression Heatmap</h4>
+                <img src="{{ se_transcript_heatmap | safe }}" alt="SE Transcript Heatmap">
+            </div>
+            <div>
+                <h4>Bootstrap Confidence Plot</h4>
+                <img src="{{ se_bootstrap | safe }}" alt="SE Bootstrap Plot">
+            </div>
+        </div>
+    {% else %}
+        <p style="color: red;"><strong>SE analysis was not performed in this run.</strong></p>
+    {% endif %}
+
+    <!-- PE Analysis Section -->
+    <h2>Paired-End (PE) Analysis</h2>
+    {% if pe_metadata %}
+        <h3>PE Metadata</h3>
+        <div class="table-container">
+            {{ pe_metadata | safe }}
+        </div>
+
+        <h3>PE DEA Results</h3>
+        <h4>Likelihood Ratio Test (LRT) - Top 20 Transcripts</h4>
+        <div class="table-container">
+            {{ pe_lrt_results | safe }}
+        </div>
+
+        <h4>Wald Test - Top 20 Transcripts</h4>
+        <div class="table-container">
+            {{ pe_wald_results | safe }}
+        </div>
+
+        <h3>PE Visualizations</h3>
+        <div class="image-container">
+            <div>
+                <h4>PCA Plot</h4>
+                <img src="{{ pe_pca | safe }}" alt="PE PCA plot">
+            </div>
+            <div>
+                <h4>Sample Distance Heatmap</h4>
+                <img src="{{ pe_heatmap | safe }}" alt="PE Sample Heatmap">
+            </div>
+        </div>
+        <div class="image-container">
+            <div>
+                <h4>Transcript Expression Heatmap</h4>
+                <img src="{{ pe_transcript_heatmap | safe }}" alt="PE Transcript Heatmap">
+            </div>
+            <div>
+                <h4>Bootstrap Confidence Plot</h4>
+                <img src="{{ pe_bootstrap | safe }}" alt="PE Bootstrap Plot">
+            </div>
+        </div>
+    {% else %}
+        <p style="color: red;"><strong>PE analysis was not performed in this run.</strong></p>
+    {% endif %}
+
+    <!-- Boxplot Comparison (Only if both SE & PE exist) -->
+    {% if se_metadata and pe_metadata %}
+        <h2>Single-End vs. Paired-End Detection</h2>
+        <div class="boxplot-container">
+            <img src="{{ boxplot | safe }}" alt="Transcript detection comparison">
+        </div>
+    {% endif %}
+
+</body>
+</html>

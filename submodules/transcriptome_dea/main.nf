@@ -7,32 +7,43 @@ process transcriptome_dea_app {
 
     input:
         val mode
+        val prefix
         path kallisto_abundance_h5s
 
     output:
-        path "sleuth_metadata.tsv", emit: sleuth_metadata_ch
-        path "sleuth_lrt_results.tsv", emit: sleuth_lrt_results_ch
-        path "sleuth_wald_results.tsv", emit: sleuth_wald_results_ch
-        path "pca_plot.png", emit: pca_plot_ch
-        path "heatmap_plot.png", emit: heatmap_plot_ch
-        path "transcript_heatmap_plot.png", emit: density_plot_ch
-        path "bootstrap_plot.png", emit: transcript_heatmap_plot_ch
+        path "${prefix}_sleuth_metadata.tsv", emit: sleuth_metadata_ch
+        path "${prefix}_sleuth_lrt_results.tsv", emit: sleuth_lrt_results_ch
+        path "${prefix}_sleuth_wald_results.tsv", emit: sleuth_wald_results_ch
+        path "${prefix}_pca_plot.png", emit: sleuth_pca_plot_ch
+        path "${prefix}_heatmap_plot.png", emit: sleuth_heatmap_plot_ch
+        path "${prefix}_transcript_heatmap_plot.png", emit: sleuth_transcript_heatmap_plot_ch
+        path "${prefix}_bootstrap_plot.png", emit: sleuth_bootstrap_plot_ch
 
     script:
         """
-        echo "Running Sleuth analysis"
+        echo "Running Sleuth analysis for ${mode}"
         /scripts/run_sleuth_analysis.sh ${kallisto_abundance_h5s}
+
+        mv sleuth_metadata.tsv ${prefix}_sleuth_metadata.tsv
+        mv sleuth_lrt_results.tsv ${prefix}_sleuth_lrt_results.tsv
+        mv sleuth_wald_results.tsv ${prefix}_sleuth_wald_results.tsv
+        mv pca_plot.png ${prefix}_pca_plot.png
+        mv heatmap_plot.png ${prefix}_heatmap_plot.png
+        mv transcript_heatmap_plot.png ${prefix}_transcript_heatmap_plot.png
+        mv bootstrap_plot.png ${prefix}_bootstrap_plot.png
         """
 
     stub:
         """
         echo "Stubbing Differential Expression Analysis"
         mkdir -p transcriptome_dea
-        touch sleuth_metadata.tsv
-        touch pca_plot.png
-        touch heatmap_plot.png
-        touch transcript_heatmap_plot.png
-        touch bootstrap_plot.png
+        touch se_sleuth_metadata.tsv
+        touch se_sleuth_lrt_results.tsv
+        touch se_sleuth_wald_results.tsv
+        touch se_pca_plot.png
+        touch se_heatmap_plot.png
+        touch se_transcript_heatmap_plot.png
+        touch se_bootstrap_plot.png
         """
 }
 
@@ -43,6 +54,7 @@ workflow transcriptome_dea_se_wf {
     main:
         transcriptome_dea_app(
             mode = "single_end",
+            prefix = "se",
             kallisto_abundance_h5s = se_abundance_h5
         )
 
@@ -50,6 +62,10 @@ workflow transcriptome_dea_se_wf {
         sleuth_metadata_ch = transcriptome_dea_app.out.sleuth_metadata_ch
         sleuth_lrt_results_ch = transcriptome_dea_app.out.sleuth_lrt_results_ch
         sleuth_wald_results_ch = transcriptome_dea_app.out.sleuth_wald_results_ch
+        sleuth_pca_plot_ch = transcriptome_dea_app.out.sleuth_pca_plot_ch
+        sleuth_heatmap_plot_ch = transcriptome_dea_app.out.sleuth_heatmap_plot_ch
+        sleuth_transcript_heatmap_plot_ch = transcriptome_dea_app.out.sleuth_transcript_heatmap_plot_ch
+        sleuth_bootstrap_plot_ch = transcriptome_dea_app.out.sleuth_bootstrap_plot_ch
 }
 
 workflow transcriptome_dea_pe_wf {
@@ -59,6 +75,7 @@ workflow transcriptome_dea_pe_wf {
     main:
         transcriptome_dea_app(
             mode = "paired_end",
+            prefix = "pe",
             kallisto_abundance_h5s = pe_abundance_h5
         )
 
@@ -66,6 +83,10 @@ workflow transcriptome_dea_pe_wf {
         sleuth_metadata_ch = transcriptome_dea_app.out.sleuth_metadata_ch
         sleuth_lrt_results_ch = transcriptome_dea_app.out.sleuth_lrt_results_ch
         sleuth_wald_results_ch = transcriptome_dea_app.out.sleuth_wald_results_ch
+        sleuth_pca_plot_ch = transcriptome_dea_app.out.sleuth_pca_plot_ch
+        sleuth_heatmap_plot_ch = transcriptome_dea_app.out.sleuth_heatmap_plot_ch
+        sleuth_transcript_heatmap_plot_ch = transcriptome_dea_app.out.sleuth_transcript_heatmap_plot_ch
+        sleuth_bootstrap_plot_ch = transcriptome_dea_app.out.sleuth_bootstrap_plot_ch
 }
 
 workflow {

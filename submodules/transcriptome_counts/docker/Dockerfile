@@ -7,7 +7,7 @@ RUN pip install pandas seaborn matplotlib
 # Set the working directory inside the container
 WORKDIR /bin
 
-# Copy the Python scripts and any other needed files into the container
+# Copy the Python scripts into the container
 COPY bin/extract_transcript_counts.py bin/generate_boxplot.py .
 
 # Ensure the scripts are executable

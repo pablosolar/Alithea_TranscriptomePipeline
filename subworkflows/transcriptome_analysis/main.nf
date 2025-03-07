@@ -83,6 +83,9 @@ workflow transcriptome_analysis_wf {
         )
 
         emit:
-            se_abundance_h5s = transcriptome_quantification_se_wf.out.kallisto_quant_abundance_h5_ch
-            pe_abundance_h5s = transcriptome_quantification_pe_wf.out.kallisto_quant_abundance_h5_ch
+            transcriptome_index_ch = transcriptome_index_ch
+            se_abundance_h5s_ch = transcriptome_quantification_se_wf.out.kallisto_quant_abundance_h5_ch
+            pe_abundance_h5s_ch = transcriptome_quantification_pe_wf.out.kallisto_quant_abundance_h5_ch
+            transcriptome_counts_tsv_ch = transcriptome_counts_wf.out.transcriptome_counts_tsv_ch
+            transcriptome_counts_boxplot_ch = transcriptome_counts_wf.out.transcriptome_counts_boxplot_ch
 }

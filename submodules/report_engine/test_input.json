@@ -1,0 +1,23 @@
+{
+    "index_info": "/path/ro/results/Homo_sapiens.GRCh38.cdna.all.idx",
+    "transcriptome_counts": "/path/ro/results/transcriptome_counts/se_vs_pe_transcript_counts.tsv",
+    "transcriptome_boxplot": "",
+
+    "se_sleuth_metadata_file": "/path/ro/results/transcriptome_dea/single_end/se_sleuth_metadata.tsv",
+    "se_sleuth_lrt_results": "/path/ro/results/transcriptome_dea/single_end/se_sleuth_lrt_results.tsv",
+    "se_sleuth_wald_results": "/path/ro/results/transcriptome_dea/single_end/se_sleuth_wald_results.tsv",
+    "se_sleuth_pca_plot": "/path/ro/results/transcriptome_dea/single_end/se_pca_plot.png",
+    "se_sleuth_heatmap_plot": "/path/ro/results/transcriptome_dea/single_end/se_heatmap_plot.png",
+    "se_sleuth_transcript_heatmap_plot": "/path/ro/results/transcriptome_dea/single_end/se_transcript_heatmap_plot.png",
+    "se_sleuth_bootstrap_plot": "/path/ro/results/transcriptome_dea/single_end/se_bootstrap_plot.png",
+
+    "pe_sleuth_metadata_file": "",
+    "pe_sleuth_lrt_results": "",
+    "pe_sleuth_wald_results": "",
+    "pe_sleuth_pca_plot": "",
+    "pe_sleuth_heatmap_plot": "",
+    "pe_sleuth_transcript_heatmap_plot": "",
+    "pe_sleuth_bootstrap_plot": "",
+
+    "results_dir": "results"
+}

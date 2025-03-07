@@ -100,14 +100,14 @@ nextflow run main.nf -stub-run -params-file stub/stub_test_input.json -with-dock
 
 ## **Expected Outputs**
 
-| Mode          | Final Published Path                                                      |
-|--------------|-------------------------------------------------------------------------|
+| Mode          | Final Published Path                                                                  |
+|--------------|---------------------------------------------------------------------------------------|
 | **Single-End** | `/path/to/results/transcriptome_quantification/single_end/sample_id_se_abundance.tsv` |
 | **Single-End** | `/path/to/results/transcriptome_quantification/single_end/sample_id_se_abundance.h5`  |
 | **Paired-End** | `/path/to/results/transcriptome_quantification/paired_end/sample_id_pe_abundance.tsv` |
 | **Paired-End** | `/path/to/results/transcriptome_quantification/paired_end/sample_id_pe_abundance.h5`  |
-| **Stub**      | `stub/transcriptome_quantification/single_end/sample_id_se_abundance.tsv`    |
-| **Stub**      | `stub/transcriptome_quantification/paired_end/sample_id_pe_abundance.h5`     |
+| **Stub**      | `stub/transcriptome_quantification/single_end/sample_id_se_abundance.tsv`             |
+| **Stub**      | `stub/transcriptome_quantification/single_end/sample_id_se_abundance.h5`              |
 
 After execution, the **quantification results** are stored in the directory specified by `results_dir`.
 

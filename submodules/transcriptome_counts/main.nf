@@ -10,13 +10,12 @@ process transcriptome_counts_app {
         path pe_abundance_tsvs
 
     output:
-        path "se_vs_pe_transcript_counts.tsv", emit: transcript_counts
-        path "se_vs_pe_boxplot.png", emit: boxplot, optional: true
+        path "se_vs_pe_transcript_counts.tsv", emit: transcriptome_counts_tsv_ch
+        path "se_vs_pe_boxplot.png", emit: transcriptome_counts_boxplot_ch, optional: true
 
     script:
         """
         echo "Extracting transcript counts from Kallisto quantification results"
-        mkdir -p transcriptome_counts
         # Run transcript counting script
         python3 /bin/extract_transcript_counts.py --se ${se_abundance_tsvs} --pe ${pe_abundance_tsvs}
 
@@ -31,7 +30,6 @@ process transcriptome_counts_app {
     stub:
         """
         echo "Stubbing transcript counts"
-        mkdir -p transcriptome_counts
         touch se_vs_pe_transcript_counts.tsv
         """
 }
@@ -48,8 +46,8 @@ workflow transcriptome_counts_wf {
         )
 
     emit:
-        transcript_counts = transcriptome_counts_app.out.transcript_counts
-        boxplot = transcriptome_counts_app.out.boxplot
+        transcriptome_counts_tsv_ch = transcriptome_counts_app.out.transcriptome_counts_tsv_ch
+        transcriptome_counts_boxplot_ch = transcriptome_counts_app.out.transcriptome_counts_boxplot_ch
 }
 
 workflow {
