@@ -15,3 +15,4 @@ submodules/*/work/
 #*.idx
 #*.tsv
 #*.log
+.DS_Store
