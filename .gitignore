@@ -1,6 +1,9 @@
 # Ignore index file for repo
 index/
 
+# Ignore results from previous runs
+results/
+
 # Ignore Nextflow work directory
 work/
 .nextflow/
