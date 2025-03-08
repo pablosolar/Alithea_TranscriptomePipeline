@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 process transcriptome_quantification_se_app {
     tag "Kallisto Quantification (single_end) - ${sample_id}"
 
-    publishDir "${params.results_dir}/transcriptome_quantification/single_end/", mode: 'copy'
+    publishDir "${params.results_dir}/transcriptome_quantification/single_end", mode: 'copy'
 
     input:
         tuple val(sample_id), path(fastq_files), path(transcriptome_index)

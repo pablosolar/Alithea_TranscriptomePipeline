@@ -10,7 +10,7 @@ I developed this module to **perform transcript-level differential expression an
    - **Likelihood Ratio Test (LRT)** to detect globally significant transcripts.
    - **Wald Test** for pairwise comparisons (treated vs untreated).
 4. **Visualizes results** via multiple plots:
-   - **PCA plot** (`se_pca_plot.png`, `pe_pca_plot.png`) for sample clustering.
+   - **PCA plot** (`se_pca_plot.png`, `pe_pca_plot.png`) for sample clustering. **(Please check `NOTES` section)**
    - **Sample distance heatmap** (`se_heatmap_plot.png`, `pe_heatmap_plot.png`).
    - **Transcript expression heatmap** (`se_transcript_heatmap_plot.png`, `pe_transcript_heatmap_plot.png`).
    - **Bootstrap confidence plot** (`se_bootstrap_plot.png`, `pe_bootstrap_plot.png`).
@@ -22,7 +22,6 @@ I chose **Sleuth** because it **natively integrates with Kallisto** and accounts
 
 - **LRT** identifies **globally significant transcript expression changes** across conditions.
 - **Wald Test** pinpoints **specific pairwise differences** in transcript expression.
-- **Bootstrap estimates** allow **confidence intervals**, improving robustness.
 
 ---
 
@@ -36,7 +35,7 @@ This is specified in `nextflow.config`:
 ```bash
 process {
     withName: transcriptome_dea_app {
-        container = "pablosolar/sleuth_dea:v1.0.0"
+        container = "pablosolar/sleuth_dea:v2.0.0"
     }
 }
 ```
@@ -170,13 +169,25 @@ I defined:
 ### **5. Selection of the Most Significant Transcript for Bootstrap Plot**
 - I **checked if bootstrap estimates were available** (`so$bs_quants`).
 - The **most significant transcript** (lowest q-value) with valid bootstrap estimates is selected for visualization.
-- The plot is saved as `bootstrap_plot.png`.
+- The plot is saved as `se|pe_bootstrap_plot.png`.
 
 ### **6. Quality Control and Visualization**
 - **PCA Plot (`se|pe_pca_plot.png`)**: Detects batch effects and sample clustering.
 - **Sample Heatmap (`se|pe_heatmap_plot.png`)**: Displays transcript-based sample similarities.
 - **Transcript Heatmap (`se|pe_transcript_heatmap_plot.png`)**: Visualizes expression patterns of **the top 40 differentially expressed transcripts**.
-- **Bootstrap Plot (`se|pe_ootstrap_plot.png`)**:  Visualizes bootstrap variation for the most significant transcript with valid bootstrap estimates.
+
+---
+
+## **NOTES**
+
+### Understanding Flipping in PCA Plot
+#### **Why Might the PCA Plot Look Different Across Runs?**
+PCA is a mathematical transformation that finds the directions of maximum variance in the data. However:
+- **The orientation of PCA axes is arbitrary**—this means PC1 and PC2 can **flip signs** between runs.
+- This happens because PCA computes **eigenvectors**, which **can be reflected without changing the variance explanation**.
+
+### **Does This Affect Interpretation?**
+No. The **relative distances between samples remain the same**, meaning the clustering pattern and biological conclusions **do not change**. The **flip is purely visual** and does not affect how the samples are related.
 
 ---
 
@@ -187,4 +198,3 @@ I based my approach on these references:
 - [Sleuth Analysis RPubs](https://rpubs.com/kapeelc12/Sleuth)
 - Pimentel, H., Bray, N.L., Puente, S., Melsted, P., & Pachter, L. (2017). *Differential analysis of RNA-Seq incorporating quantification uncertainty.* *Nature Methods*, 14(7), 687-690.
 - Bray, N.L., Pimentel, H., Melsted, P., & Pachter, L. (2016). *Near-optimal probabilistic RNA-seq quantification.* *Nature Biotechnology*, 34(5), 525-527.
-"""

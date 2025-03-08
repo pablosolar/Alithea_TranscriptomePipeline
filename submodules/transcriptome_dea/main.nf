@@ -22,15 +22,7 @@ process transcriptome_dea_app {
     script:
         """
         echo "Running Sleuth analysis for ${mode}"
-        /scripts/run_sleuth_analysis.sh ${kallisto_abundance_h5s}
-
-        mv sleuth_metadata.tsv ${prefix}_sleuth_metadata.tsv
-        mv sleuth_lrt_results.tsv ${prefix}_sleuth_lrt_results.tsv
-        mv sleuth_wald_results.tsv ${prefix}_sleuth_wald_results.tsv
-        mv pca_plot.png ${prefix}_pca_plot.png
-        mv heatmap_plot.png ${prefix}_heatmap_plot.png
-        mv transcript_heatmap_plot.png ${prefix}_transcript_heatmap_plot.png
-        mv bootstrap_plot.png ${prefix}_bootstrap_plot.png
+        /scripts/run_sleuth_analysis.sh ${kallisto_abundance_h5s} ${prefix}
         """
 
     stub:
