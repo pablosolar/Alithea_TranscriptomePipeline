@@ -19,5 +19,5 @@
     "pe_sleuth_transcript_heatmap_plot": "/path/to/transcriptome_dea/paired_end/pe_transcript_heatmap_plot.png",
     "pe_sleuth_bootstrap_plot": "/path/to/transcriptome_dea/paired_end/pe_bootstrap_plot.png",
 
-    "results_dir": "results"
+    "results_dir": "/path/to/results"
 }

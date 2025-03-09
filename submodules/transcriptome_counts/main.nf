@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 process transcriptome_counts_app {
     tag "Transcript Counts Extraction - abundance.tsv"
 
-    publishDir "${params.results_dir}/transcriptome_counts", mode: 'copy'
+    publishDir "${params.results_dir}/transcriptome_analysis/transcriptome_counts", mode: 'copy'
 
     input:
         path se_abundance_tsvs
@@ -50,6 +50,7 @@ workflow transcriptome_counts_wf {
         transcriptome_counts_boxplot_ch = transcriptome_counts_app.out.transcriptome_counts_boxplot_ch
 }
 
+// Testing Workflow to be used with module test_input.json
 workflow {
     def se_abundance_tsvs = Channel.fromPath(params.se_abundance_tsvs).toList()
     def pe_abundance_tsvs = Channel.fromPath(params.pe_abundance_tsvs).toList()

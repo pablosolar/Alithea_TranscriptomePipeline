@@ -78,7 +78,7 @@ print("Saved PCA plot to: pca_plot.png")
 heatmap_plot <- plot_sample_heatmap(so)
 ggsave(paste0(dataset_type, "_heatmap_plot.png"), plot = heatmap_plot)
 
-# Transcriptome Heatmaps
+# Transcript Heatmaps
 sig_transcripts <- sleuth_wald_results_sorted %>%
   filter(qval < 0.05) %>%
   arrange(qval, desc(abs(b)))

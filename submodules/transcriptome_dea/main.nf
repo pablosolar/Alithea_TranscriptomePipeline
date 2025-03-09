@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 process transcriptome_dea_app {
     tag "Differential Expression Analysis (${mode})"
 
-    publishDir "${params.results_dir}/transcriptome_dea/${mode}", mode: 'copy'
+    publishDir "${params.results_dir}/differential_expression_analysis/transcriptome_dea/${mode}", mode: 'copy'
 
     input:
         val mode
@@ -81,6 +81,7 @@ workflow transcriptome_dea_pe_wf {
         sleuth_bootstrap_plot_ch = transcriptome_dea_app.out.sleuth_bootstrap_plot_ch
 }
 
+// Testing Workflow to be used with module test_input.json
 workflow {
     def se_abundance_h5s = Channel.fromPath(params.se_abundance_h5s).toList()
 

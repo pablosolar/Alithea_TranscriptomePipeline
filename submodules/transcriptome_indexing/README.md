@@ -48,12 +48,12 @@ nextflow run main.nf -params-file test_input.json -with-docker
 
 This module requires the following input parameters:
 
-| Parameter                  | Type    | Description                                                                 |
-|----------------------------|---------|-----------------------------------------------------------------------------|
+| Parameter                  | Type    | Description                                                                                 |
+|----------------------------|---------|---------------------------------------------------------------------------------------------|
 | `transcriptome_fasta_path` | string  | Path to the reference transcriptome FASTA file (e.g., `Homo_sapiens.GRCh38.cdna.all.fa.gz`) |
-| `index_output_dir`         | string  | Directory where the Kallisto index will be stored                           |
-| `index_basename`           | string  | Name of the output Kallisto index file                                      |
-| `create_index`             | boolean | Whether to generate the index (`true`) or use an existing one (`false`)    |
+| `index_output_dir`         | string  | Directory where the Kallisto index will be stored or fetched (if `create_index` is `false`   |
+| `index_basename`           | string  | Name of the output Kallisto index file                                                      |
+| `create_index`             | boolean | Whether to generate the index (`true`) or use an existing one (`false`)                     |
 
 ---
 

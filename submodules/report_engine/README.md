@@ -105,25 +105,25 @@ nextflow run main.nf -params-file test_input.json -with-docker
 #### **Example of `test_input.json`**
 ```json
 {
-    "index_info": "/path/ro/results/Homo_sapiens.GRCh38.cdna.all.idx",
-    "transcriptome_counts": "/path/ro/results/transcriptome_counts/se_vs_pe_transcript_counts.tsv",
-    "transcriptome_boxplot": "",
+    "index_info": "/path/to/Homo_sapiens.GRCh38.cdna.all.idx",
+    "transcriptome_counts": "/path/to/transcriptome_counts/se_vs_pe_transcript_counts.tsv",
+    "transcriptome_boxplot": "/path/to/transcriptome_counts/se_vs_pe_boxplot.png",
 
-    "se_sleuth_metadata_file": "/path/ro/results/transcriptome_dea/single_end/se_sleuth_metadata.tsv",
-    "se_sleuth_lrt_results": "/path/ro/results/transcriptome_dea/single_end/se_sleuth_lrt_results.tsv",
-    "se_sleuth_wald_results": "/path/ro/results/transcriptome_dea/single_end/se_sleuth_wald_results.tsv",
-    "se_sleuth_pca_plot": "/path/ro/results/transcriptome_dea/single_end/se_pca_plot.png",
-    "se_sleuth_heatmap_plot": "/path/ro/results/transcriptome_dea/single_end/se_heatmap_plot.png",
-    "se_sleuth_transcript_heatmap_plot": "/path/ro/results/transcriptome_dea/single_end/se_transcript_heatmap_plot.png",
-    "se_sleuth_bootstrap_plot": "/path/ro/results/transcriptome_dea/single_end/se_bootstrap_plot.png",
+    "se_sleuth_metadata_file": "/path/to/transcriptome_dea/single_end/se_sleuth_metadata.tsv",
+    "se_sleuth_lrt_results": "/path/to/transcriptome_dea/single_end/se_sleuth_lrt_results.tsv",
+    "se_sleuth_wald_results": "/path/to/transcriptome_dea/single_end/se_sleuth_wald_results.tsv",
+    "se_sleuth_pca_plot": "/path/to/transcriptome_dea/single_end/se_pca_plot.png",
+    "se_sleuth_heatmap_plot": "/path/to/transcriptome_dea/single_end/se_heatmap_plot.png",
+    "se_sleuth_transcript_heatmap_plot": "/path/to/transcriptome_dea/single_end/se_transcript_heatmap_plot.png",
+    "se_sleuth_bootstrap_plot": "/path/to/transcriptome_dea/single_end/se_bootstrap_plot.png",
 
-    "pe_sleuth_metadata_file": "",
-    "pe_sleuth_lrt_results": "",
-    "pe_sleuth_wald_results": "",
-    "pe_sleuth_pca_plot": "",
-    "pe_sleuth_heatmap_plot": "",
-    "pe_sleuth_transcript_heatmap_plot": "",
-    "pe_sleuth_bootstrap_plot": "",
+    "pe_sleuth_metadata_file": "/path/to/transcriptome_dea/paired_end/pe_sleuth_metadata.tsv",
+    "pe_sleuth_lrt_results": "/path/to/transcriptome_dea/paired_end/pe_sleuth_lrt_results.tsv",
+    "pe_sleuth_wald_results": "/path/to/transcriptome_dea/paired_end/pe_sleuth_wald_results.tsv",
+    "pe_sleuth_pca_plot": "/path/to/transcriptome_dea/paired_end/pe_pca_plot.png",
+    "pe_sleuth_heatmap_plot": "/path/to/transcriptome_dea/paired_end/pe_heatmap_plot.png",
+    "pe_sleuth_transcript_heatmap_plot": "/path/to/transcriptome_dea/paired_end/pe_transcript_heatmap_plot.png",
+    "pe_sleuth_bootstrap_plot": "/path/to/transcriptome_dea/paired_end/pe_bootstrap_plot.png",
 
     "results_dir": "results"
 }
@@ -139,17 +139,17 @@ nextflow run main.nf -stub-run -params-file stub/stub_test_input.json
 #### **Example of `stub_test_input.json`**
 ```json
 {
-    "index_info": "/path/ro/sutb/stub/index/stub_kallisto.idx",
-    "transcriptome_counts": "/path/ro/sutb/stub/transcriptome_counts/se_vs_pe_transcript_counts.tsv",
-    "transcriptome_boxplot": "/path/ro/sutb/stub/transcriptome_counts/se_vs_pe_boxplot.png",
+    "index_info": "/path/to/sutb/stub/index/stub_kallisto.idx",
+    "transcriptome_counts": "/path/to/sutb/stub/transcriptome_counts/se_vs_pe_transcript_counts.tsv",
+    "transcriptome_boxplot": "/path/to/sutb/stub/transcriptome_counts/se_vs_pe_boxplot.png",
 
-    "se_sleuth_metadata_file": "/path/ro/sutb/stub/transcriptome_dea/single_end/sleuth_metadata.tsv",
-    "se_sleuth_lrt_results": "/path/ro/sutb/stub/transcriptome_dea/single_end/sleuth_lrt_results.tsv",
-    "se_sleuth_wald_results": "/path/ro/sutb/stub/transcriptome_dea/single_end/sleuth_wald_results.tsv",
-    "se_sleuth_pca_plot": "/path/ro/sutb/stub/transcriptome_dea/single_end/pca_plot.png",
-    "se_sleuth_heatmap_plot": "/path/ro/sutb/stub/transcriptome_dea/single_end/heatmap_plot.png",
-    "se_sleuth_transcript_heatmap_plot": "/path/ro/sutb/stub/transcriptome_dea/single_end/transcript_heatmap_plot.png",
-    "se_sleuth_bootstrap_plot": "/path/ro/sutb/stub/transcriptome_dea/single_end/bootstrap_plot.png",
+    "se_sleuth_metadata_file": "/path/to/sutb/stub/transcriptome_dea/single_end/sleuth_metadata.tsv",
+    "se_sleuth_lrt_results": "/path/to/sutb/stub/transcriptome_dea/single_end/sleuth_lrt_results.tsv",
+    "se_sleuth_wald_results": "/path/to/sutb/stub/transcriptome_dea/single_end/sleuth_wald_results.tsv",
+    "se_sleuth_pca_plot": "/path/to/sutb/stub/transcriptome_dea/single_end/pca_plot.png",
+    "se_sleuth_heatmap_plot": "/path/to/sutb/stub/transcriptome_dea/single_end/heatmap_plot.png",
+    "se_sleuth_transcript_heatmap_plot": "/path/to/sutb/stub/transcriptome_dea/single_end/transcript_heatmap_plot.png",
+    "se_sleuth_bootstrap_plot": "/path/to/sutb/stub/transcriptome_dea/single_end/bootstrap_plot.png",
 
     "pe_sleuth_metadata_file": "",
     "pe_sleuth_lrt_results": "",

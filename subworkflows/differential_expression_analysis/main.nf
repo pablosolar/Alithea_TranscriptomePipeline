@@ -41,3 +41,14 @@ workflow differential_expression_analysis_wf {
         pe_sleuth_transcript_heatmap_plot_ch = transcriptome_dea_pe_wf.out.sleuth_transcript_heatmap_plot_ch
         pe_sleuth_bootstrap_plot_ch = transcriptome_dea_pe_wf.out.sleuth_bootstrap_plot_ch
 }
+
+workflow {
+
+    def se_abundance_h5s = Channel.fromList(params.se_abundance_h5s) .collect()
+    def pe_abundance_h5s = Channel.fromList(params.pe_abundance_h5s) .collect()
+
+    differential_expression_analysis_wf (
+        se_abundance_h5s = se_abundance_h5s,
+        pe_abundance_h5s = pe_abundance_h5s
+    )
+}

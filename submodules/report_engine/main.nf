@@ -3,7 +3,7 @@ nextflow.enable.dsl=2
 process report_engine_app {
     tag "Report Engine - Generation"
 
-    publishDir "${params.results_dir}/report_engine", mode: 'copy'
+    publishDir "${params.results_dir}/report_generation/report_engine", mode: 'copy'
 
     input:
         path index_info
@@ -30,24 +30,24 @@ process report_engine_app {
     script:
         """
         echo "Generating report for Transcriptome Analysis and DEA results"
-        /bin/generate_report.sh \
-            \"${index_info}" \
-            \"${transcriptome_counts}" \
-            \"${transcriptome_boxplot}" \
-            \"${se_sleuth_metadata_file}" \
-            \"${se_sleuth_lrt_results}" \
-            \"${se_sleuth_wald_results}" \
-            \"${se_sleuth_pca_plot}" \
-            \"${se_sleuth_heatmap_plot}" \
-            \"${se_sleuth_transcript_heatmap_plot}" \
-            \"${se_sleuth_bootstrap_plot}" \
-            \"${pe_sleuth_metadata_file}" \
-            \"${pe_sleuth_lrt_results}" \
-            \"${pe_sleuth_wald_results}" \
-            \"${pe_sleuth_pca_plot}" \
-            \"${pe_sleuth_heatmap_plot}" \
-            \"${pe_sleuth_transcript_heatmap_plot}" \
-            \"${pe_sleuth_bootstrap_plot}"
+        /bin/generate_report.py \
+            --index-info "${index_info}" \
+            --transcriptome-counts "${transcriptome_counts}" \
+            --boxplot "${transcriptome_boxplot}" \
+            --se-metadata "${se_sleuth_metadata_file}" \
+            --se-lrt-results "${se_sleuth_lrt_results}" \
+            --se-wald-results "${se_sleuth_wald_results}" \
+            --se-pca "${se_sleuth_pca_plot}" \
+            --se-heatmap "${se_sleuth_heatmap_plot}" \
+            --se-transcript-heatmap "${se_sleuth_transcript_heatmap_plot}" \
+            --se-bootstrap "${se_sleuth_bootstrap_plot}" \
+            --pe-metadata "${pe_sleuth_metadata_file}" \
+            --pe-lrt-results "${pe_sleuth_lrt_results}" \
+            --pe-wald-results "${pe_sleuth_wald_results}" \
+            --pe-pca "${pe_sleuth_pca_plot}" \
+            --pe-heatmap "${pe_sleuth_heatmap_plot}" \
+            --pe-transcript-heatmap "${pe_sleuth_transcript_heatmap_plot}" \
+            --pe-bootstrap "${pe_sleuth_bootstrap_plot}"
         """
 
     stub:
@@ -102,6 +102,7 @@ workflow report_engine_wf {
         transcriptome_pipeline_report_ch = report_engine_app.out.transcriptome_pipeline_report_ch
 }
 
+// Testing Workflow to be used with module test_input.json
 workflow {
     // General Inputs
     def index_info = params.index_info ? Channel.fromPath(params.index_info).toList() : []

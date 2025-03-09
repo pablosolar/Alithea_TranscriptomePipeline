@@ -1,0 +1,15 @@
+{
+    "se_abundance_h5s": [
+        "/path/to/transcriptome_analysis/transcriptome_quantification/single_end/Treated1_se_abundance.h5",
+        "/path/to/transcriptome_analysis/transcriptome_quantification/single_end/Treated2_se_abundance.h5",
+        "/path/to/transcriptome_analysis/transcriptome_quantification/single_end/Untreated1_se_abundance.h5",
+        "/path/to/transcriptome_analysis/transcriptome_quantification/single_end/Untreated2_se_abundance.h5"
+    ],
+    "pe_abundance_h5s": [
+        "/path/to/transcriptome_analysis/transcriptome_quantification/paired_end/Treated1_pe_abundance.h5",
+        "/path/to/transcriptome_analysis/transcriptome_quantification/paired_end/Treated2_pe_abundance.h5",
+        "/path/to/transcriptome_analysis/transcriptome_quantification/paired_end/Untreated1_pe_abundance.h5",
+        "/path/to/transcriptome_analysis/transcriptome_quantification/paired_end/Untreated2_pe_abundance.h5"
+    ],
+    "results_dir": "/path/to/results"
+}

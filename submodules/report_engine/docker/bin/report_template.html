@@ -5,56 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transcriptome Analysis Report</title>
 <style>
+    /* General Styling */
     body {
         font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
         margin: 40px;
     }
 
-    h2 {
-        color: #2c3e50;
+    h1, h2, h3, h4 {
+        font-weight: bold;
     }
 
+    h1 {
+        text-align: center;
+        background: linear-gradient(90deg, #333, #666);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+        border-bottom: 2px solid #bbb;
+        padding-bottom: 5px;
+        margin-top: 20px;
+        color: #444;
+    }
+
+    p {
+        line-height: 1.5;
+    }
+
+    /* Logo Styling */
+    .logo-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .logo-container img {
+        width: 40%;
+        max-width: 600px;
+    }
+
+    /* Centered Section Navigation Buttons */
+    .navigation {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        background-color: #444;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin: 5px;
+    }
+
+    .btn:hover {
+        background-color: #222;
+    }
+
+    /* Table Buttons */
+    .table-container button {
+        display: inline-block;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: bold;
+        text-align: center;
+        background-color: #666;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-bottom: 10px;
+    }
+
+    .table-container button:hover {
+        background-color: #444;
+    }
+
+    /* Table Styling */
     .table-container {
         overflow-x: auto;
         max-width: 100%;
         margin-bottom: 20px;
+        background-color: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
     }
 
     table {
-        width: auto;
+        width: 100%;
         border-collapse: collapse;
-        max-width: 100%;
-        table-layout: auto;
         margin-top: 10px;
+        border-radius: 8px;
+        overflow: hidden;
     }
 
     th, td {
         border: 1px solid #ddd;
-        padding: 8px;
+        padding: 10px;
         font-size: 12px;
         text-align: left;
-        width: auto;
-        max-width: 100%;
-    }
-
-    .boxplot-container {
-        text-align: left;
-        margin-bottom: 20px;
-    }
-
-    .boxplot-container img {
-        max-width: 40%;
-        height: auto;
-        border: 1px solid #ddd;
-        margin-left: 10px;
-        padding: 5px;
         background-color: #f9f9f9;
     }
 
+    th {
+        background-color: #bbb;
+        color: #333;
+    }
+
+    tr:hover {
+        background-color: #e6e6e6;
+    }
+
+    /* Image Styling */
     .image-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 80px;
+        gap: 40px;
         justify-content: flex-start;
         margin-bottom: 30px;
     }
@@ -62,147 +140,255 @@
     .image-container div {
         width: 40%;
         text-align: center;
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
 
     .image-container img {
-        width: 100%;
+        width: 95%;
         height: auto;
-        border: 1px solid #ddd;
+        border: 1px solid #ccc;
         padding: 5px;
-        background-color: #f9f9f9;
-        margin-left: 10px;
+        background-color: #f7f7f7;
+        border-radius: 6px;
     }
 
-    @media (max-width: 768px) {
-        .image-container {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .image-container div {
-            width: 100%;
-        }
+    /* Alert Messages */
+    .alert-light {
+        background-color: #bbb;
+        color: black;
+        padding: 10px;
+        border-radius: 6px;
     }
+
+    .alert-error {
+        background-color: #c0392b;
+        color: white;
+        padding: 10px;
+        border-radius: 6px;
+    }
+
 </style>
 </head>
 <body>
+    <!-- Logo Section -->
+    <div class="logo-container">
+        <img src="https://drive.google.com/thumbnail?id=1CULXNcIvWEOXJ-yBAKSn3avH9kemSXuY&sz=w1000">
+    </div>
+
     <h1>Transcriptome Analysis Report</h1>
 
-    <h2>Index has been generated in the path:</h2>
-    <p>{{ index_info }}</p>
+    <div class="navigation">
+        <a href="#index-info" class="btn">Index Info</a>
+        <a href="#transcript-counts" class="btn">Transcriptome Counts</a>
+        <a href="#se-analysis" class="btn">Single-End DEA</a>
+        <a href="#pe-analysis" class="btn">Paired-End DEA</a>
+    </div>
 
-    <h2>Transcriptome Counts (Top 20)</h2>
-
-    <!-- Message about what data is being shown -->
-    {% if se_metadata and pe_metadata %}
-        <p>Showing transcriptome results for <strong>both Single-End and Paired-End reads.</strong> Check the boxplot below for a comparison.</p>
-    {% elif se_metadata %}
-        <p>Showing transcriptome results for <strong>Single-End (SE) reads.</strong></p>
-    {% elif pe_metadata %}
-        <p>Showing transcriptome results for <strong>Paired-End (PE) reads.</strong></p>
+    <div class="info-box">
+    <h3>About This Report</h3>
+    <p>
+        This report provides an overview of <b>transcriptome quantification</b> and
+        <b>differential expression analysis</b> performed using Nextflow. It summarizes key results,
+        including transcript counts, statistical tests, and visualizations for both
+        <b>Single-End (SE)</b> and/or <b>Paired-End (PE)</b> sequencing data.
+    </p>
+    <p>
+        The report references paths from <b>Nextflow execution directories</b>, where the pipeline was run.
+        However, the <b>final processed results</b> are published in the directories defined in
+        <i>test_input.json</i> (<i>index_output_dir</i> and <i>results_dir</i>)
+    </p>
+    <p>
+        If you need the fully processed and published results, please refer to these directories.
+        The paths inside this report correspond to intermediate Nextflow execution locations.
+    </p>
+</div>
+    <h2 id="index-info">Index Information</h2>
+    {% if index_info %}
+        <p class="alert-light"><b>Kallisto Index Path:</b> {{ index_info }}</p>
     {% else %}
-        <p style="color: red;"><strong>No transcriptome results available in this run.</strong></p>
+        <p class="alert-error"><b>No index was generated in this run.</b></p>
     {% endif %}
 
+    <h2 id="transcript-counts">Transcriptome Counts</h2>
+    <p>
+        This table presents transcript quantification results from <b>Kallisto pseudo-alignment</b>.
+        {% if se_metadata and pe_metadata %}
+            The dataset includes both <b>Single-End (SE)</b> and <b>Paired-End (PE)</b> reads.
+        {% elif se_metadata %}
+            Only <b>Single-End (SE)</b> sequencing data is included.
+        {% elif pe_metadata %}
+            Only <b>Paired-End (PE)</b> sequencing data is included.
+        {% endif %}
+    </p>
     <div class="table-container">
         {{ transcriptome_counts | safe }}
     </div>
 
-    <!-- SE Analysis Section -->
-    <h2>Single-End (SE) Analysis</h2>
+    {% if se_metadata and pe_metadata and boxplot %}
+        <h2>Single-End vs. Paired-End Detection</h2>
+        <p>This boxplot compares transcript detection rates between SE and PE sequencing technologies.</p>
+        <div class="image-container">
+            <div><h4>Comparison Boxplot</h4><img src="{{ boxplot | safe }}" alt="SE vs PE Detection"></div>
+        </div>
+    {% endif %}
+
+   <h2 id="se-analysis">Single-End (SE) Differential Expression Analysis (DEA)</h2>
     {% if se_metadata %}
-        <h3>SE Metadata</h3>
+        <p>
+            This section presents results from <b>Single-End (SE) sequencing</b> differential expression analysis,
+            performed using <b>Sleuth</b> on <b>Kallisto pseudo-alignment</b> results.
+            The goal is to identify transcripts exhibiting <b>statistically significant expression changes</b> between conditions
+            (e.g., <i>treated vs. untreated</i>).
+        </p>
+
+        <h3>SE DEA Metadata File</h3>
+        <p>
+            The metadata file <b>maps each sample to its respective condition</b> (e.g., treated or untreated).
+            This ensures correct grouping of samples for <b>statistical modeling</b> and differential expression testing.
+        </p>
         <div class="table-container">
             {{ se_metadata | safe }}
         </div>
 
         <h3>SE DEA Results</h3>
-        <h4>Likelihood Ratio Test (LRT) - Top 20 Transcripts</h4>
+
+        <h4>Likelihood Ratio Test (LRT)</h4>
+        <p>
+            The <b>LRT</b> detects <b>global expression differences</b> across all conditions.
+            This test compares a <i>full model</i> (with condition effects) against a <i>reduced model</i> (no condition effects),
+            identifying transcripts with significant expression changes.
+        </p>
         <div class="table-container">
             {{ se_lrt_results | safe }}
         </div>
 
-        <h4>Wald Test - Top 20 Transcripts</h4>
+        <h4>Wald Test</h4>
+        <p>
+            The <b>Wald Test</b> pinpoints <b>specific pairwise expression changes</b>,
+            such as <i>treated vs. untreated</i>. It evaluates whether the difference in transcript expression
+            between conditions is statistically significant.
+        </p>
         <div class="table-container">
             {{ se_wald_results | safe }}
         </div>
 
         <h3>SE Visualizations</h3>
+        <p>
+            The following plots <b>illustrate transcript-level expression patterns</b> and sample clustering:
+        </p>
         <div class="image-container">
             <div>
                 <h4>PCA Plot</h4>
                 <img src="{{ se_pca | safe }}" alt="SE PCA plot">
+                <p>Visualizes <b>sample clustering</b> based on transcript expression profiles.
+                   <i>PCA axes are arbitrary</i> and <b>may flip</b> across different runs,
+                   but relative distances between samples remain <b>biologically meaningful</b>.</p>
             </div>
             <div>
                 <h4>Sample Distance Heatmap</h4>
                 <img src="{{ se_heatmap | safe }}" alt="SE Sample Heatmap">
+                <p>Displays <b>pairwise transcriptome similarities</b> between samples,
+                   helping to assess clustering and potential batch effects.</p>
             </div>
-        </div>
-        <div class="image-container">
             <div>
                 <h4>Transcript Expression Heatmap</h4>
                 <img src="{{ se_transcript_heatmap | safe }}" alt="SE Transcript Heatmap">
+                <p>Highlights <b>expression levels of differentially expressed transcripts</b>
+                   (up to the top 40 most significant transcripts).</p>
             </div>
             <div>
                 <h4>Bootstrap Confidence Plot</h4>
                 <img src="{{ se_bootstrap | safe }}" alt="SE Bootstrap Plot">
+                <p>Estimates <b>expression variability</b> for the <b>most significant transcript</b>,
+                   using <b>bootstrapped confidence intervals</b>.</p>
             </div>
         </div>
     {% else %}
-        <p style="color: red;"><strong>SE analysis was not performed in this run.</strong></p>
+        <p class="alert-error"><b>No Single-End DEA was performed in this run.</b></p>
     {% endif %}
 
-    <!-- PE Analysis Section -->
-    <h2>Paired-End (PE) Analysis</h2>
+    <h2 id="pe-analysis">Paired-End (PE) Differential Expression Analysis (DEA)</h2>
     {% if pe_metadata %}
-        <h3>PE Metadata</h3>
+        <p>
+            This section presents results from <b>Paired-End (PE) sequencing</b> differential expression analysis,
+            performed using <b>Sleuth</b> on <b>Kallisto pseudo-alignment</b> results.
+            The goal is to identify transcripts exhibiting <b>statistically significant expression changes</b> between conditions
+            (e.g., <i>treated vs. untreated</i>).
+        </p>
+
+        <h3>PE DEA Metadata File</h3>
+        <p>
+            The metadata file <b>maps each sample to its respective condition</b> (e.g., treated or untreated).
+            This ensures correct grouping of samples for <b>statistical modeling</b> and differential expression testing.
+        </p>
         <div class="table-container">
             {{ pe_metadata | safe }}
         </div>
 
         <h3>PE DEA Results</h3>
-        <h4>Likelihood Ratio Test (LRT) - Top 20 Transcripts</h4>
+
+        <h4>Likelihood Ratio Test (LRT)</h4>
+        <p>
+            The <b>LRT</b> detects <b>global expression differences</b> across all conditions.
+            This test compares a <i>full model</i> (with condition effects) against a <i>reduced model</i> (no condition effects),
+            identifying transcripts with significant expression changes.
+        </p>
         <div class="table-container">
             {{ pe_lrt_results | safe }}
         </div>
 
-        <h4>Wald Test - Top 20 Transcripts</h4>
+        <h4>Wald Test</h4>
+        <p>
+            The <b>Wald Test</b> pinpoints <b>specific pairwise expression changes</b>,
+            such as <i>treated vs. untreated</i>. It evaluates whether the difference in transcript expression
+            between conditions is statistically significant.
+        </p>
         <div class="table-container">
             {{ pe_wald_results | safe }}
         </div>
 
         <h3>PE Visualizations</h3>
+        <p>
+            The following plots <b>illustrate transcript-level expression patterns</b> and sample clustering:
+        </p>
         <div class="image-container">
             <div>
                 <h4>PCA Plot</h4>
                 <img src="{{ pe_pca | safe }}" alt="PE PCA plot">
+                <p>Visualizes <b>sample clustering</b> based on transcript expression profiles.
+                   <i>PCA axes are arbitrary</i> and <b>may flip</b> across different runs,
+                   but relative distances between samples remain <b>biologically meaningful</b>.</p>
             </div>
             <div>
                 <h4>Sample Distance Heatmap</h4>
                 <img src="{{ pe_heatmap | safe }}" alt="PE Sample Heatmap">
+                <p>Displays <b>pairwise transcriptome similarities</b> between samples,
+                   helping to assess clustering and potential batch effects.</p>
             </div>
-        </div>
-        <div class="image-container">
             <div>
                 <h4>Transcript Expression Heatmap</h4>
                 <img src="{{ pe_transcript_heatmap | safe }}" alt="PE Transcript Heatmap">
+                <p>Highlights <b>expression levels of differentially expressed transcripts</b>
+                   (up to the top 40 most significant transcripts).</p>
             </div>
             <div>
                 <h4>Bootstrap Confidence Plot</h4>
                 <img src="{{ pe_bootstrap | safe }}" alt="PE Bootstrap Plot">
+                <p>Estimates <b>expression variability</b> for the <b>most significant transcript</b>,
+                   using <b>bootstrapped confidence intervals</b>.</p>
             </div>
         </div>
     {% else %}
-        <p style="color: red;"><strong>PE analysis was not performed in this run.</strong></p>
+        <p class="alert-error"><b>No Paired-End DEA was performed in this run.</b></p>
     {% endif %}
 
-    <!-- Boxplot Comparison (Only if both SE & PE exist) -->
-    {% if se_metadata and pe_metadata %}
-        <h2>Single-End vs. Paired-End Detection</h2>
-        <div class="boxplot-container">
-            <img src="{{ boxplot | safe }}" alt="Transcript detection comparison">
-        </div>
-    {% endif %}
-
+    <h3>Understanding PCA Axis Flipping</h3>
+    <p>
+        PCA plots are widely used for exploring the relationship between samples. However, the axes in PCA plots are <b>arbitrary</b> and can <b>flip signs</b> across different runs due to eigenvector computation. This flipping does <b>not</b> affect interpretation because sample distances remain unchanged.
+    </p>
 </body>
 </html>

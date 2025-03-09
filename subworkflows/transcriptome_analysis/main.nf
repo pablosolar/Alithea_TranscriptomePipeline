@@ -89,3 +89,16 @@ workflow transcriptome_analysis_wf {
             transcriptome_counts_tsv_ch = transcriptome_counts_wf.out.transcriptome_counts_tsv_ch
             transcriptome_counts_boxplot_ch = transcriptome_counts_wf.out.transcriptome_counts_boxplot_ch
 }
+
+// Testing Workflow to be used with subworkflow test_input.json
+workflow {
+    transcriptome_analysis_wf (
+        transcriptome_fasta_path = file(params.transcriptome_fasta_path),
+        index_output_dir = file(params.index_output_dir),
+        index_basename = params.index_basename,
+        create_index = params.create_index,
+        demultiplexed_fastqs = params.demultiplexed_fastqs,
+        single_end = params.single_end,
+        paired_end = params.paired_end
+    )
+}
