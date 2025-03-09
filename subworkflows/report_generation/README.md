@@ -1,94 +1,102 @@
-# Kallisto Quantification Subworkflow (`transcriptome_analysis_wf`)
+# Report Generation Subworkflow
 
 ## Overview
+The `report_generation_wf` subworkflow is responsible for generating a comprehensive **HTML report** summarizing the results of the transcriptome analysis pipeline. It integrates key outputs from the transcriptome quantification and differential expression analysis steps, presenting them in an organized and visually appealing manner.
 
-This subworkflow performs **isoform quantification** using Kallisto in both **Single-End (SE) and Paired-End (PE) modes**. It automatically detects the sequencing mode based on the Nextflow parameters and processes the appropriate samples accordingly.
+This subworkflow ensures that all relevant results, including transcript counts, differential expression outputs, and statistical visualizations, are compiled into a single, easy-to-read report.
 
-The results are **separated by mode** to ensure clear organization and compatibility with downstream analyses.
+## Why This Subworkflow Exists
+Manually reviewing transcriptome analysis results across multiple files and directories can be cumbersome. This subworkflow automates report generation, integrating:
+- **Transcriptome Index Information**
+- **Transcript Quantification Summaries**
+- **Differential Expression Analysis Results**
+- **Visualization Plots**
 
-## How the Subworkflow Works
+By consolidating these outputs, the report enhances **readability, reproducibility, and accessibility** of key findings.
 
-1. **Loads the Kallisto index**
-   - If `create_index=true`, it runs the `transcriptome_index` module to generate the index.
-   - Otherwise, it loads an existing index file.
+## How It Works
+The subworkflow follows these major steps:
 
-2. **Reads input FASTQ files**
-   - Automatically **detects SE and PE samples** based on filenames (`_R1` / `_R2`).
+1. **Collects input data** from transcriptome analysis and differential expression workflows.
+2. **Processes data** using Jinja2 templating to dynamically generate an HTML report.
+3. **Integrates visualizations** such as PCA plots, heatmaps, and transcript quantification boxplots.
+4. **Saves the final report** as `transcriptome_pipeline_report.html`.
 
-3. **Runs separate Kallisto quantification workflows**
-   - **SE quantification (`transcriptome_quantification_se_wf`)** → Processes `_R2` files.
-   - **PE quantification (`transcriptome_quantification_pe_wf`)** → Groups `_R1 + R2` for paired-end.
+## Submodules Used
+This subworkflow calls the following **containerized** submodule:
+- **Report Engine:** [`report_engine_wf`](../../submodules/report_engine/README.md)
 
-## Why Separate Workflows for SE & PE?
+Refer to its README file for details on implementation.
 
-Using **separate workflows** instead of a single combined workflow **resolves multiple issues**, including:
+## Input Parameters
+| Parameter                           | Description                                                                        | Example Value                  |
+|--------------------------------------|------------------------------------------------------------------------------------|--------------------------------|
+| `index_info`                        | Path to the transcriptome index file                                               | `/path/to/index/genome.idx`   |
+| `transcriptome_counts`               | Transcript count matrix (TSV format)                                               | `/path/to/results/counts.tsv` |
+| `transcriptome_boxplot`              | Boxplot comparing SE vs PE transcript detection                                    | `/path/to/results/boxplot.png` |
+| `se_sleuth_metadata_file`            | Metadata file for SE differential expression analysis                              | `/path/to/results/se_metadata.tsv` |
+| `se_sleuth_lrt_results`              | LRT results for SE DEA                                                             | `/path/to/results/se_lrt.tsv` |
+| `se_sleuth_wald_results`             | Wald test results for SE DEA                                                       | `/path/to/results/se_wald.tsv` |
+| `se_sleuth_pca_plot`                 | PCA plot for SE analysis                                                           | `/path/to/results/se_pca.png` |
+| `se_sleuth_heatmap_plot`             | Sample heatmap for SE analysis                                                     | `/path/to/results/se_heatmap.png` |
+| `se_sleuth_transcript_heatmap_plot`  | Transcript heatmap for SE analysis                                                 | `/path/to/results/se_transcript_heatmap.png` |
+| `se_sleuth_bootstrap_plot`           | Bootstrap confidence plot for SE analysis                                          | `/path/to/results/se_bootstrap.png` |
+| `pe_sleuth_metadata_file`            | Metadata file for PE differential expression analysis                              | `/path/to/results/pe_metadata.tsv` |
+| `pe_sleuth_lrt_results`              | LRT results for PE DEA                                                             | `/path/to/results/pe_lrt.tsv` |
+| `pe_sleuth_wald_results`             | Wald test results for PE DEA                                                       | `/path/to/results/pe_wald.tsv` |
+| `pe_sleuth_pca_plot`                 | PCA plot for PE analysis                                                           | `/path/to/results/pe_pca.png` |
+| `pe_sleuth_heatmap_plot`             | Sample heatmap for PE analysis                                                     | `/path/to/results/pe_heatmap.png` |
+| `pe_sleuth_transcript_heatmap_plot`  | Transcript heatmap for PE analysis                                                 | `/path/to/results/pe_transcript_heatmap.png` |
+| `pe_sleuth_bootstrap_plot`           | Bootstrap confidence plot for PE analysis                                          | `/path/to/results/pe_bootstrap.png` |
+| `results_dir`                        | Directory where the final report is stored (will create `report_engine` subfolder) | `/path/to/results`            |
 
-✔ **Output structure conflicts** → `publishDir` works reliably when SE & PE results are stored in separate locations.  
-✔ **Process independence** → Debugging, testing, and execution are clearer.  
-✔ **Performance stability** → Kallisto runs efficiently even when workflows are separate.  
+## How to Run
+Run the subworkflow using Nextflow and Docker:
 
-### **Final Approach → Two Independent Workflows**
-- **`transcriptome_quantification_se_wf`** → Runs for Single-End samples (SE).  
-- **`transcriptome_quantification_pe_wf`** → Runs for Paired-End samples (PE).  
-
-## Prerequisites
-
-### Install Kallisto  
-Ensure Kallisto is installed before running the pipeline:
-
-```
-brew install kallisto
-```
-
-## Usage
-
-### Nextflow Parameters
-
-| Parameter         | Type    | Description  |
-|------------------|--------|-------------|
-| `create_index` | Boolean | `true` → Generate index, `false` → Use existing index. |
-| `transcriptome_fasta_path` | String  | Path to the reference transcriptome FASTA file. |
-| `index_output_dir`  | String  | Directory where the Kallisto index is stored or generated. |
-| `index_basename`  | String  | Name of the Kallisto index file. |
-| `demultiplexed_fastqs` | String | Path to the input FASTQ files. |
-| `single_end` | Boolean | `true` → Run SE processing, `false` → Skip SE. |
-| `paired_end` | Boolean | `true` → Run PE processing, `false` → Skip PE. |
-
-## Testing
-
-### Run Normally (Full Execution)
-
-```
-nextflow run main.nf -params-file test_input.json
+```bash
+nextflow run main.nf -params-file test_input.json -with-docker
 ```
 
-### Run in Stub Mode (Simulated Execution)
+This will execute the subworkflow using the parameters defined in `test_input.json`. Example
 
-```
-nextflow run main.nf -stub-run -params-file stub/stub_test_input.json
-```
-
-#### Example: `stub/stub_test_input.json`
-
-```
+```json
 {
-    "create_index": false,
-    "transcriptome_fasta_path": "stub/references/Homo_sapiens.GRCh38.cdna.all.fa.gz",
-    "index_output_dir": "stub/index/",
-    "index_basename": "stub_kallisto.idx",
-    "demultiplexed_fastqs": "stub/demultiplexed/*.fastq.gz",
-    "single_end": true,
-    "paired_end": false
+    "index_info": "/path/to/Homo_sapiens.GRCh38.cdna.all.idx",
+    "transcriptome_counts": "/path/to/transcriptome_counts/se_vs_pe_transcript_counts.tsv",
+    "transcriptome_boxplot": "/path/to/transcriptome_counts/se_vs_pe_boxplot.png",
+
+    "se_sleuth_metadata_file": "/path/to/transcriptome_dea/single_end/se_sleuth_metadata.tsv",
+    "se_sleuth_lrt_results": "/path/to/transcriptome_dea/single_end/se_sleuth_lrt_results.tsv",
+    "se_sleuth_wald_results": "/path/to/transcriptome_dea/single_end/se_sleuth_wald_results.tsv",
+    "se_sleuth_pca_plot": "/path/to/transcriptome_dea/single_end/se_pca_plot.png",
+    "se_sleuth_heatmap_plot": "/path/to/transcriptome_dea/single_end/se_heatmap_plot.png",
+    "se_sleuth_transcript_heatmap_plot": "/path/to/transcriptome_dea/single_end/se_transcript_heatmap_plot.png",
+    "se_sleuth_bootstrap_plot": "/path/to/transcriptome_dea/single_end/se_bootstrap_plot.png",
+
+    "pe_sleuth_metadata_file": "/path/to/transcriptome_dea/paired_end/pe_sleuth_metadata.tsv",
+    "pe_sleuth_lrt_results": "/path/to/transcriptome_dea/paired_end/pe_sleuth_lrt_results.tsv",
+    "pe_sleuth_wald_results": "/path/to/transcriptome_dea/paired_end/pe_sleuth_wald_results.tsv",
+    "pe_sleuth_pca_plot": "/path/to/transcriptome_dea/paired_end/pe_pca_plot.png",
+    "pe_sleuth_heatmap_plot": "/path/to/transcriptome_dea/paired_end/pe_heatmap_plot.png",
+    "pe_sleuth_transcript_heatmap_plot": "/path/to/transcriptome_dea/paired_end/pe_transcript_heatmap_plot.png",
+    "pe_sleuth_bootstrap_plot": "/path/to/transcriptome_dea/paired_end/pe_bootstrap_plot.png",
+
+    "results_dir": "/path/to/results"
 }
 ```
 
 ## Expected Outputs
+| Output                        | Description                              |
+|--------------------------------|------------------------------------------|
+| `transcriptome_pipeline_report.html` | HTML report summarizing all analysis results |
 
-| Mode      | Output Path  |
-|-----------|--------------|
-| **SE Quantification** | `results/transcriptome_quantification/single_end/quant_SAMPLE_ID/` |
-| **PE Quantification** | `results/transcriptome_quantification/paired_end/quant_SAMPLE_ID/` |
-| **Stub Mode (SE)** | `stub/transcriptome_quantification/single_end/quant_SAMPLE_ID/abundance.tsv` |
-| **Stub Mode (PE)** | `stub/transcriptome_quantification/paired_end/quant_SAMPLE_ID/abundance.tsv` |
+## Decisions Taken
+- The report includes both **Single-End (SE) and Paired-End (PE) results** if available.
+- Visualizations such as PCA plots and heatmaps are automatically integrated.
+- The report format follows a structured layout for clarity and ease of interpretation.
+- **All submodules used in this workflow are containerized**, ensuring reproducibility.
 
----
+## References
+- Jinja2 Documentation: https://jinja.palletsprojects.com/en/latest/
+- Nextflow Documentation: https://www.nextflow.io/docs/latest/getstarted.html
+
