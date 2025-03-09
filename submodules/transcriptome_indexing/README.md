@@ -108,6 +108,8 @@ This is the stub test input JSON file for validating module execution:
 
 After execution, the **generated transcriptome index** is stored in the directory specified by `index_output_dir`, using the filename defined in `index_basename`.
 
+Additionally, this module generates an `md5sum.txt` file listing checksums for key output files.
+
 ---
 
 ## **References**

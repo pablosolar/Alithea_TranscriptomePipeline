@@ -143,6 +143,8 @@ This is the stub test input JSON file for validating module execution:
 
 After execution, the **quantification results** are stored in the directory specified by `results_dir`.
 
+Additionally, this module generates an `md5sum.txt` file listing checksums for key output files.
+
 ---
 
 ## **Decisions I Took in the R Script**

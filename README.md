@@ -1,13 +1,41 @@
 # Alithea Transcriptome Pipeline
 
-## 📌 Overview
-The **Alithea Transcriptome Pipeline** is a fully automated Nextflow pipeline designed to perform **transcript quantification** using **Kallisto** and **differential expression analysis (DEA)** using **Sleuth**. The pipeline processes RNA-seq data, supporting both **Single-End (SE) and Paired-End (PE) reads**, and generates **comprehensive transcript abundance tables, DEA results, and visual reports**.
+## Overview
+I developed the **Alithea Transcriptome Pipeline** as a fully automated Nextflow workflow for **transcript quantification** using **Kallisto** and **differential expression analysis (DEA)** with **Sleuth**. The pipeline is designed to handle **both Single-End (SE) and Paired-End (PE) reads**, producing **transcript abundance tables, DEA results, and visual reports**.
 
-This pipeline is structured to be **modular, scalable, and reproducible**, making it adaptable for large-scale transcriptomic studies and potential **CI/CD integration**.
+I structured this pipeline to be **modular, scalable, and fully reproducible**, ensuring it can be used for both **research and production environments**. Every component was designed to be **independently testable**, so submodules and subworkflows can be validated separately while integrating seamlessly.
 
-Each submodule and subworkflow is designed to be **independently executable and testable**, ensuring that components can be validated separately and seamlessly integrated into the full pipeline.
+## Enhancements Beyond the Original Task
+While implementing this pipeline, I took steps to **go beyond** the original requirements to ensure **best practices, flexibility, and maintainability**.
 
-## 🔹 Key Features
+- **Modular and Scalable Design:**  
+  - The pipeline is structured into **subworkflows and submodules**, allowing each step to be executed **independently** or as part of the full workflow.
+  - This ensures better debugging, scalability, and the ability to reuse components in different contexts.
+
+- **Containerization for Reproducibility:**  
+  - Each module runs inside **Docker**, guaranteeing a consistent execution environment.
+  - This helps avoid system dependency issues and makes the pipeline **portable across different infrastructures**.
+
+- **Independent Testing & Stub Mode:**  
+  - I included **test_input.json** files for each module, allowing **isolated testing** before integrating them.
+  - Stub mode was implemented to **simulate execution with minimal resources**, making it easier to validate individual steps.
+
+- **Nextflow Best Practices Implemented:**  
+  - I separated `main.nf`, `nextflow.config`, **subworkflows**, and **submodules** to keep the pipeline organized.
+  - Efficient **channel-based communication** ensures a **scalable and optimized workflow**.
+  - Parameters allow skipping index generation, **making execution more flexible**.
+
+- **Comprehensive Documentation:**  
+  - I wrote **clear and structured READMEs** for the entire pipeline, subworkflows and each module.
+  - Documentation covers **expected outputs, execution steps, and test procedures**.
+
+- **Bonus Features Implemented:**  
+  - I added **report generation with visualizations**, which was an optional bonus task.
+  - The **output structure is well-organized**, making it easy to interpret results.
+
+This approach ensures **reproducibility, maintainability, and scalability**, making the pipeline **ready for real-world use**.
+
+## Key Features
 - **Automated transcript quantification** using **Kallisto**.
 - **Differential Expression Analysis (DEA)** using **Sleuth**.
 - **Support for both Single-End (SE) and Paired-End (PE) RNA-seq analysis**.
@@ -19,8 +47,8 @@ Each submodule and subworkflow is designed to be **independently executable and 
 
 ---
 
-## 📂 Pipeline Structure
-The pipeline follows a structured **modular approach** to ensure reproducibility, facilitate debugging, and allow easy scalability. It is composed of **subworkflows**, which orchestrate multiple **submodules** that handle specific tasks.
+## Pipeline Structure
+I designed the pipeline with a **structured modular approach**, ensuring **reproducibility, scalability, and ease of debugging**. It consists of **subworkflows** that orchestrate multiple **submodules**, each handling a specific task.
 
 ```
 /Alithea_TranscriptomePipeline/
@@ -42,7 +70,7 @@ The pipeline follows a structured **modular approach** to ensure reproducibility
 │   ├── report_generation/
 ```
 
-## 🔹 Subworkflows & Modules
+## Subworkflows & Modules
 The pipeline consists of multiple **subworkflows**, each calling **submodules** responsible for specific computational tasks:
 
 ### **Subworkflows**
@@ -61,7 +89,7 @@ The pipeline consists of multiple **subworkflows**, each calling **submodules** 
 │   ├── test_input.json     # Module test input
 ```
 
-### **Submodules Used**
+### **Submodules**
 | Submodule | Description                                                          | Docker Image used |
 |-----------|----------------------------------------------------------------------|-------------------|
 | **transcriptome_indexing_wf** | Generates or loads a transcriptome index for Kallisto.               | `pablosolar/kallisto_tool:v0.51.0` |
@@ -93,7 +121,7 @@ Each module is **containerized** to ensure reproducibility and ease of deploymen
 ---
 
 
-## 📥 Input Parameters
+## Input Parameters
 | Parameter | Description                                                                                                          | Example Value |
 |-----------|----------------------------------------------------------------------------------------------------------------------|---------------|
 | `create_index` | Whether to generate a new transcriptome index (`true`) or retrieve from `ìndex_output_dir/index_basename` (`false`). | `true` |
@@ -105,7 +133,7 @@ Each module is **containerized** to ensure reproducibility and ease of deploymen
 | `paired_end` | Process PE reads (`true`/`false`).                                                                                   | `true` |
 | `results_dir` | Directory for storing results.                                                                                       | `/path/to/results` |
 
-## 🚀 Running the Pipeline
+## Running the Pipeline
 Run the full pipeline using:
 
 ```bash
@@ -127,7 +155,7 @@ This is the `test_input.json` used in tests:
 }
 ```
 
-## 📤 Expected Output
+## Expected Output
 After a successful run, the pipeline produces the following output structure:
 
 ```
@@ -173,3 +201,55 @@ transcriptome_analysis/
 │
 └── Homo_sapiens.GRCh38.cdna.all.idx
 ```
+
+### Output and duration
+
+This is the pipeline output for a full run (SE & PE), showing execution time:
+
+````
+nextflow run main.nf -params-file test_input.json -with-docker                                                                                                    ✔ │ at 18:59:07 
+Nextflow 24.10.5 is available - Please consider updating your version to it
+
+ N E X T F L O W   ~  version 24.10.4
+
+Launching `main.nf` [gloomy_perlman] DSL2 - revision: dd4ba6cdaa
+
+executor >  local (21)
+[54/e8913e] process > transcriptome_analysis_wf:transcriptome_indexing_wf:transcriptome_indexing_app (Indexing Homo_sapiens.GRCh38.cdna.all.idx)                           [100%] 1 of 1 ✔
+[4a/b682f6] process > transcriptome_analysis_wf:transcriptome_quantification_se_wf:transcriptome_quantification_se_app (Kallisto Quantification (single_end) - Untreated2) [100%] 8 of 8 ✔
+[41/335747] process > transcriptome_analysis_wf:transcriptome_quantification_pe_wf:transcriptome_quantification_pe_app (Kallisto Quantification (paired_end) - Untreated4) [100%] 8 of 8 ✔
+[a7/212bb8] process > transcriptome_analysis_wf:transcriptome_counts_wf:transcriptome_counts_app (Transcript Counts Extraction - abundance.tsv)                            [100%] 1 of 1 ✔
+[d7/e372d4] process > differential_expression_analysis_wf:transcriptome_dea_se_wf:transcriptome_dea_app (Differential Expression Analysis (single_end))                    [100%] 1 of 1 ✔
+[1d/69f61a] process > differential_expression_analysis_wf:transcriptome_dea_pe_wf:transcriptome_dea_app (Differential Expression Analysis (paired_end))                    [100%] 1 of 1 ✔
+[da/38cbdb] process > report_generation_wf:report_engine_wf:report_engine_app (Report Engine - Generation)                                                                 [100%] 1 of 1 ✔
+
+Completed at: 09-Mar-2025 19:10:10
+Duration    : 11m
+CPU hours   : 0.8
+Succeeded   : 2
+````
+
+### MD5 Checksums
+Each module automatically generates an **`md5sum.txt`** file with precomputed checksums for key outputs.  
+These can be used for **manual verification** if needed, though no automatic validation is performed.
+
+---
+
+## Execution Environment
+
+I developed and tested this pipeline using the following setup:
+
+### Hardware
+- **Machine:** MacBook Pro (14-inch, November 2024)
+- **Chip:** Apple M4 Pro
+- **Memory:** 48 GB RAM
+- **Storage:** 1 TB SSD
+
+### Software & Configuration
+- **Operating System:** macOS Sequoia 15.2
+- **Nextflow Version:** 24.10.4
+- **Docker Desktop:**
+  - **CPU Limit:**  12 cores
+  - **Memory Limit:**  24 GB
+  - **Swap:**  1 GB
+  - **Disk Usage Limit::**  1 TB

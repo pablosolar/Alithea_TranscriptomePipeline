@@ -111,6 +111,8 @@ nextflow run main.nf -stub-run -params-file stub/stub_test_input.json -with-dock
 
 After execution, the **quantification results** are stored in the directory specified by `results_dir`.
 
+Additionally, this module generates an `md5sum.txt` file listing checksums for key output files.
+
 ---
 
 ## **References**

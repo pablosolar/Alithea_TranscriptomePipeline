@@ -34,8 +34,8 @@ workflow {
     // 2. Creates some useful DEA plots
     // 3. Handles Single-end & Paired-end analysis (if required)
     differential_expression_analysis_wf(
-        se_abundance_h5s = transcriptome_analysis_wf.out.se_abundance_h5s_ch .toList(),
-        pe_abundance_h5s = transcriptome_analysis_wf.out.pe_abundance_h5s_ch .toList()
+        se_abundance_h5s = transcriptome_analysis_wf.out.se_abundance_h5s_ch .collect(),
+        pe_abundance_h5s = transcriptome_analysis_wf.out.pe_abundance_h5s_ch .collect()
     )
 
     // Call report report_generation
