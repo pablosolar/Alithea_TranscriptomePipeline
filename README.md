@@ -52,19 +52,23 @@ I designed the pipeline with a **structured modular approach**, ensuring **repro
 
 ```
 /Alithea_TranscriptomePipeline/
-├── main.nf                             # Main Nextflow script
-├── nextflow.config                     # Configuration file
-├── test_input.json                     # General test input for the entire pipeline
-├── README.md                           # Pipeline documentation
-├── LICENSE                             # License file
-├── .gitignore                          # Git ignore file
-├── submodules/                         # Core computational submodules
+├── main.nf                                               # Main Nextflow script
+├── nextflow.config                                       # Configuration file
+├── test_input.json                                       # General test input for the entire pipeline
+├── README.md                                             # Pipeline documentation
+├── LICENSE                                               # License file
+├── .gitignore                                            # Git ignore file
+├── test_reports/                                         # Folder with output reports for the different runs
+│   ├── transcriptome_pipeline_report_full_run.html  
+│   ├── transcriptome_pipeline_report_single_end_run.html  
+│   ├── transcriptome_pipeline_report_paired_end.html  
+├── submodules/                                           # Core computational submodules
 │   ├── transcriptome_indexing/  
 │   ├── transcriptome_quantification/
 │   ├── transcriptome_counts/
 │   ├── transcriptome_dea/
-│   ├── report_engine/                  # Report generation
-├── subworkflows/                       # Subworkflows orchestrating submodules
+│   ├── report_engine/                                   # Report generation
+├── subworkflows/                                        # Subworkflows orchestrating submodules
 │   ├── transcriptome_analysis/
 │   ├── differential_expression_analysis/
 │   ├── report_generation/
