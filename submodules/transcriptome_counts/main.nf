@@ -10,17 +10,22 @@ process transcriptome_counts_app {
         path pe_abundance_tsvs
 
     output:
-        path "se_vs_pe_transcript_counts.tsv", emit: transcriptome_counts_tsv_ch
+        path "se_vs_pe_transcript_counts.tsv", emit: transcriptome_counts_tsv_ch, optional: true
         path "se_vs_pe_boxplot.png", emit: transcriptome_counts_boxplot_ch, optional: true
 
     script:
         """
         echo "Extracting transcript counts from Kallisto quantification results"
-        # Run transcript counting script
-        python3 /bin/extract_transcript_counts.py --se ${se_abundance_tsvs} --pe ${pe_abundance_tsvs}
+
+        # Check if we have valid SE and PE input files before running the script
+        if [[ -n "$se_abundance_tsvs" ]] || [[ -n "$pe_abundance_tsvs" ]]; then
+            python3 /bin/extract_transcript_counts.py --se ${se_abundance_tsvs} --pe ${pe_abundance_tsvs}
+        else
+                echo "Skipping transcript count extraction: No input files found."
+        fi
 
         # Generate boxplot only if both SE & PE lists are non-empty
-        if [[ -n "$se_abundance_tsvs" && -n "$pe_abundance_tsvs" ]]; then
+        if [[ -n "$se_abundance_tsvs" ]] && [[ -n "$pe_abundance_tsvs" ]]; then
             python3 /bin/generate_boxplot.py --counts "se_vs_pe_transcript_counts.tsv"
         else
             echo "Skipping boxplot generation: One of the datasets is missing."
