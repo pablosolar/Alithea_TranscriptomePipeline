@@ -15,9 +15,6 @@ process transcriptome_indexing_app {
     output:
         path index_basename, emit: transcriptome_index_ch
 
-    when:
-        create_index // Only generates index when requested by parameter
-
     script:
         """
         echo "Generating Kallisto index"

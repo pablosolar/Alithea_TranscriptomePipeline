@@ -29,20 +29,25 @@ workflow transcriptome_analysis_wf {
 
     main:
         // STEP 1: Generate index OR use existing one
-        transcriptome_indexing_wf(
-            transcriptome_fasta_path = transcriptome_fasta_path,
-            index_output_dir = index_output_dir,
-            index_basename = index_basename,
-            create_index = create_index
-        )
-
-        transcriptome_index_ch = transcriptome_indexing_wf.out.transcriptome_index_ch.ifEmpty {
-            def index_file = file("${index_output_dir}/${index_basename}")
-            if (!index_file.exists()) {
-                log.error "No Index file found in the path: ${index_output_dir}/${index_basename}"
+              if (create_index) {
+            if (!file(transcriptome_fasta_path).exists()) {
+               log.error "Transcriptome FASTA file not found at: ${params.transcriptome_fasta_path}"
+                            System.exit(1)
+            }
+            transcriptome_index_ch = transcriptome_indexing_wf(
+                transcriptome_fasta_path = transcriptome_fasta_path,
+                index_output_dir = index_output_dir,
+                index_basename = index_basename,
+                create_index = create_index
+            )
+        } else {
+            if (!file("${index_output_dir}/${index_basename}").exists()) {
+            log.error "No Index file found in the path: ${index_output_dir}/${index_basename}"
                 System.exit(1)
             }
+            transcriptome_index_ch = Channel.of(file("${index_output_dir}/${index_basename}"))
         }
+
 
         // STEP 2: Load FASTQ files from the specified path
         fastq_files_ch = Channel.fromPath(demultiplexed_fastqs, type: "file") .ifEmpty {
