@@ -1,5 +1,5 @@
 {
-    "create_index": false,
+    "create_index": true,
     "transcriptome_fasta_path": "/path/to/reference/Homo_sapiens.GRCh38.cdna.all.fa.gz",
     "index_output_dir": "/path/to/test",
     "index_basename": "Homo_sapiens.GRCh38.cdna.all.idx",
