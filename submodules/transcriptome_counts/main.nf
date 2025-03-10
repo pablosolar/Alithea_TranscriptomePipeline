@@ -13,6 +13,9 @@ process transcriptome_counts_app {
         path "se_vs_pe_transcript_counts.tsv", emit: transcriptome_counts_tsv_ch, optional: true
         path "se_vs_pe_boxplot.png", emit: transcriptome_counts_boxplot_ch, optional: true
 
+    when:
+        se_abundance_tsvs || pe_abundance_tsvs
+
     script:
         """
         echo "Extracting transcript counts from Kallisto quantification results"
