@@ -29,19 +29,27 @@ workflow transcriptome_analysis_wf {
 
     main:
         // STEP 1: Generate index OR use existing one
-        if (create_index) {
-            transcriptome_index_ch = transcriptome_indexing_wf(
+	if (create_index) {
+           if (!file(transcriptome_fasta_path).exists()) {
+                log.error "Transcriptome FASTA file not found at: ${params.transcriptome_fasta_path}"
+    		    System.exit(1)
+           }
+           transcriptome_index_ch = transcriptome_indexing_wf(
                 transcriptome_fasta_path=transcriptome_fasta_path,
                 index_output_dir=index_output_dir,
                 index_basename=index_basename,
                 create_index=create_index
-            )
+           )
         } else {
-            transcriptome_index_ch = Channel.fromPath(file("${index_output_dir}/${index_basename}"))
+            transcriptome_index_ch = Channel.fromPath(file("${index_output_dir}/${index_basename}")) .ifEmpty {
+                error "ERROR ~ No Index file found in the  path: ${index_output_dir}/${index_basename}"
+            }
         }
 
         // STEP 2: Load FASTQ files from the specified path
-        fastq_files_ch = Channel.fromPath(demultiplexed_fastqs, type: "file")
+        fastq_files_ch = Channel.fromPath(demultiplexed_fastqs, type: "file" .ifEmpty {
+            error "ERROR ~ No FASTQ files found in the provided path: ${demultiplexed_fastqs}"
+        }
 
         // STEP 3: Samples Quantification
         // Create single-end samples vector (R2 files only) if required by parameter
