@@ -89,7 +89,7 @@ def generate_report(args):
     transcriptome_counts = safe_read_csv(args.transcriptome_counts) or "<p>No transcriptome count data available</p>"
 
     # Boxplot (only included if both SE and PE exist)
-    boxplot = safe_path(args.boxplot) if args.se_metadata and args.pe_metadata else None
+    boxplot = encode_image(args.boxplot) if args.se_metadata and args.pe_metadata else None
 
     # Single-End (SE) Results
     se_metadata = safe_read_csv(args.se_metadata)
