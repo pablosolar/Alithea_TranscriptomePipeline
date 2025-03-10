@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 
 import os
+import base64
 import argparse
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
+def encode_image(image_path):
+    """Convert an image to base64 encoding for embedding in HTML."""
+    if image_path and os.path.exists(image_path):
+        with open(image_path, "rb") as img_file:
+            return f"data:image/png;base64,{base64.b64encode(img_file.read()).decode()}"
+    return None
 
 def generate_html_table(df, table_id, num_visible=5):
     """Generate an expandable HTML table from a pandas DataFrame."""
@@ -88,19 +95,19 @@ def generate_report(args):
     se_metadata = safe_read_csv(args.se_metadata)
     se_lrt_results = safe_generate_html_table(args.se_lrt_results, "se_lrt_results")
     se_wald_results = safe_generate_html_table(args.se_wald_results, "se_wald_results")
-    se_pca = safe_path(args.se_pca)
-    se_heatmap = safe_path(args.se_heatmap)
-    se_transcript_heatmap = safe_path(args.se_transcript_heatmap)
-    se_bootstrap = safe_path(args.se_bootstrap)
+    se_pca = encode_image(args.se_pca)
+    se_heatmap = encode_image(args.se_heatmap)
+    se_transcript_heatmap = encode_image(args.se_transcript_heatmap)
+    se_bootstrap = encode_image(args.se_bootstrap)
 
     # Paired-End (PE) Results
     pe_metadata = safe_read_csv(args.pe_metadata)
     pe_lrt_results = safe_generate_html_table(args.pe_lrt_results, "pe_lrt_results")
     pe_wald_results = safe_generate_html_table(args.pe_wald_results, "pe_wald_results")
-    pe_pca = safe_path(args.pe_pca)
-    pe_heatmap = safe_path(args.pe_heatmap)
-    pe_transcript_heatmap = safe_path(args.pe_transcript_heatmap)
-    pe_bootstrap = safe_path(args.pe_bootstrap)
+    pe_pca = encode_image(args.pe_pca)
+    pe_heatmap = encode_image(args.pe_heatmap)
+    pe_transcript_heatmap = encode_image(args.pe_transcript_heatmap)
+    pe_bootstrap = encode_image(args.pe_bootstrap)
 
     # Load Jinja2 template
     env = Environment(loader=FileSystemLoader('/bin'))
